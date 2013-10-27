@@ -17,11 +17,13 @@ SOURCES += main.cpp\
     neuropixel.cpp \
     image.cpp \
     #array2d.inl
+    neuralnetwork.cpp
 
 HEADERS  += mainwindow.h \
     neuropixel.h \
     image.h \
-    array2d.h
+    array2d.h \
+    neuralnetwork.h
 
 FORMS    += mainwindow.ui
 
