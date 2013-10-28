@@ -14,16 +14,15 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    neuropixel.cpp \
     image.cpp \
     #array2d.inl
-    neuralnetwork.cpp
+    neuralnetwork.cpp \
+    worker.cpp
 
 HEADERS  += mainwindow.h \
-    neuropixel.h \
     image.h \
-    array2d.h \
-    neuralnetwork.h
+    neuralnetwork.h \
+    worker.h
 
 FORMS    += mainwindow.ui
 

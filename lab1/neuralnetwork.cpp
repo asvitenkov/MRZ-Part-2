@@ -1,11 +1,15 @@
 #include "neuralnetwork.h"
 
 #include <QDebug>
+#include <QThreadPool>
 
-CNeuralNetwork::CNeuralNetwork(int segmantLength, int secondLayerCount)
+CNeuralNetwork::CNeuralNetwork(int segmantLength, int secondLayerCount, double alpha)
     : mSegmentLength(segmantLength)
     , mSecondLayerCount(secondLayerCount)
+    , mAlpha(alpha)
+    , mStep(0)
 {
+    Q_ASSERT(mAlpha >0 && mAlpha <= 0.01);
     initialize();
 }
 
@@ -19,8 +23,15 @@ void CNeuralNetwork::initialize()
 {
     mFirstLayerMatrix = arma::randu<arma::mat>(mSegmentLength, mSecondLayerCount) * 2 - 1;
     mSecondLayerMatrix = arma::randu<arma::mat>(mSecondLayerCount, mSegmentLength) * 2 - 1;
-    //std::cout << mFirstLayerMatrix << "\n";
-    //std::cout << mSecondLayerMatrix << "\n";
+
+    CCalculateError *error;
+
+    for(int i=0; i< THREAD_COUNT; i++)
+    {
+        error = new CCalculateError(&mFirstLayerMatrix, &mSecondLayerMatrix);
+        error->setAutoDelete(false);
+        mThreatArray.push_back(error);
+    }
 }
 
 
@@ -28,38 +39,64 @@ void CNeuralNetwork::initialize()
 double CNeuralNetwork::learn(const QVector<Segment *> &vector)
 {
 
-    //std::cout << mFirstLayerMatrix.n_rows << " " << mFirstLayerMatrix.n_cols << "\n";
-    //std::cout << mFirstLayerMatrix << "\n\n\n";
+    mStep++;
 
     int size = vector.size();
+    Segment* pSegment;
+    Matrix2DF Y;
+    Matrix2DF Xs;
+    Matrix2DF deltaX;
 
     for(int i=0; i<size; i++)
     {
-        Segment* pSegment = vector.at(i);
+        pSegment = vector.at(i);
         Matrix2DF &X = *pSegment->mMatrix;
-        Matrix2DF Y = X * mFirstLayerMatrix;
-        Matrix2DF Xs = Y * mSecondLayerMatrix;
-        Matrix2DF deltaX = Xs - X;
+        Y = X * mFirstLayerMatrix;
+        Xs = Y * mSecondLayerMatrix;
+        deltaX = Xs - X;
 
-        double alphaFirst = 1.0 / arma::accu(arma::pow(Xs,2));
-        double alphaSecond = 1.0 / arma::accu(arma::pow(Y,2));
+        mFirstLayerMatrix = mFirstLayerMatrix - mAlpha * ( X.t() * deltaX * ( mSecondLayerMatrix.t() ) );
 
-
-        mFirstLayerMatrix = mFirstLayerMatrix - (alphaFirst * X.t()) * deltaX * ( mSecondLayerMatrix.t() );
-
-        mSecondLayerMatrix = mSecondLayerMatrix - alphaSecond * Y.t() * deltaX;
+        mSecondLayerMatrix = mSecondLayerMatrix - mAlpha * ( Y.t() * deltaX );
 
     }
 
     double error = 0;
 
-    for(int i=0; i<size; i++)
-    {
-        Segment* pSegment = vector.at(i);
-        Matrix2DF &X = *pSegment->mMatrix;
-        Matrix2DF deltaX = X * mFirstLayerMatrix * mSecondLayerMatrix - X;
-        error+=arma::accu(arma::pow(deltaX,2));
-    }
+//    int part = size / THREAD_COUNT;
+
+
+//    CCalculateError *pItem;
+//    QThreadPool *threadPool = QThreadPool::globalInstance();
+
+//    for(int i=0; i<THREAD_COUNT; i++)
+//    {
+//        pItem = mThreatArray.at(i);
+//        pItem->mFrom = part * i;
+//        pItem->mTo = (i+1) * part;
+//        //if(i == THREAD_COUNT -1 )
+//        //    pItem->mTo
+//        pItem->mSegmentArray = &vector;
+//        threadPool->start(pItem);
+//    }
+
+//    threadPool->waitForDone();
+
+//    for(int i=0; i<THREAD_COUNT; i++)
+//    {
+//        error = mThreatArray.at(i)->mError;
+//    }
+
+
+//    for(int i=0; i<size; i++)
+//    {
+//        pSegment = vector.at(i);
+//        Matrix2DF &X = *pSegment->mMatrix;
+//        deltaX = (X * mFirstLayerMatrix) * mSecondLayerMatrix - X;
+//        error += arma::accu(arma::pow(deltaX,2));
+//    }
+
+    //qDebug() << "Error: " <<error;
 
     return error;
 }
@@ -77,4 +114,55 @@ QVector<Segment*>* CNeuralNetwork::process(const QVector<Segment *> &vector) con
     }
 
     return retVector;
+}
+
+
+CCalculateError::CCalculateError(Matrix2DF *fMatrix, Matrix2DF *sMatrix)
+    : mFrom(0)
+    , mTo(0)
+    , mSegmentArray(0)
+    , mFirstMatrix(fMatrix)
+    , mSecondMatrix(sMatrix)
+{
+
+}
+
+
+
+CCalculateError::~CCalculateError()
+{
+
+}
+
+void CCalculateError::run()
+{
+    mError = 0;
+    Matrix2DF deltaX;
+    Matrix2DF *X;
+    Segment* pSegment;
+    for(int i=mFrom; i<mTo; i++)
+    {
+        pSegment = mSegmentArray->at(i);
+        X = pSegment->mMatrix;
+        deltaX = (*X * *mFirstMatrix) * *mSecondMatrix - *X;
+        mError += arma::accu(arma::pow(deltaX,2));
+    }
+}
+
+
+double CNeuralNetwork::getError(const QVector<Segment *> &vector) const
+{
+    Segment* pSegment;
+    Matrix2DF deltaX;
+    double error = 0;
+    int size = vector.size();
+        for(int i=0; i<size; i++)
+        {
+            pSegment = vector.at(i);
+            Matrix2DF &X = *pSegment->mMatrix;
+            deltaX = (X * mFirstLayerMatrix) * mSecondLayerMatrix - X;
+            error += arma::accu(arma::pow(deltaX,2));
+        }
+
+   return error;
 }

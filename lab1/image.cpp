@@ -1,7 +1,6 @@
 #include "image.h"
 #include <QImage>
 #include <armadillo>
-#include "neuropixel.h"
 
 #include <QDebug>
 
@@ -25,12 +24,6 @@ CImage& CImage::operator =(const CImage &other)
     mMatrix = other.mMatrix;
     return *this;
 }
-
-CNeuroPixel CImage::color(int x, int y) const
-{
-    return CNeuroPixel(mMatrix(x,y*3), mMatrix(x,y*3+1), mMatrix(x,y*3+2));
-}
-
 
 CImage CImage::fromImage(QImage &from)
 {

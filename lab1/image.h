@@ -63,7 +63,7 @@ public:
 
     int rows() const { return mMatrix.n_rows; }
     int cols()  const{ return mMatrix.n_cols; }
-    CNeuroPixel color(int x, int y) const;
+    //CNeuroPixel color(int x, int y) const;
 
 
     //QImage toImage();
