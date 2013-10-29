@@ -19,7 +19,13 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-//    QImage img("/home/aas/ns3.bmp");
+//    mat A = randu<mat>(2,2);
+//    A.at(1,0) = 1;
+//    A.at(1,1) = 3.5;
+//    rowvec vvv = A.row(1);
+//    double sum =  arma::sum(vvv);
+
+//    QImage img("/home/anton/projects/256.png");
 
 //    int ww = 8;
 //    int hh = 8;

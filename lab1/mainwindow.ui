@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>484</width>
+    <width>492</width>
     <height>276</height>
    </rect>
   </property>
@@ -176,10 +176,18 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QLineEdit" name="error"/>
+           <widget class="QLineEdit" name="error">
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
+           </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QLineEdit" name="iteration"/>
+           <widget class="QLineEdit" name="iteration">
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
+           </widget>
           </item>
           <item row="2" column="1">
            <widget class="QSpinBox" name="updateStep">
@@ -190,6 +198,9 @@
              <number>999999999</number>
             </property>
             <property name="singleStep">
+             <number>100</number>
+            </property>
+            <property name="value">
              <number>100</number>
             </property>
            </widget>
@@ -281,7 +292,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>484</width>
+     <width>492</width>
      <height>25</height>
     </rect>
    </property>

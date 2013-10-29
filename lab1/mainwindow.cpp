@@ -84,11 +84,11 @@ void MainWindow::initNetwork()
     mSegmentsArray = mNeuralImage->split(ui->nValue->value(), ui->mValue->value());
 
     mWorker = new CWorker(mNetwork,mSegmentsArray);
+    mWorker->setUpdateStep(ui->updateStep->value());
 
     mThread = new QThread();
 
     mWorker->moveToThread(mThread);
-    mWorker->setUpdateStep(100);
     //mWorker->stop();
 
     connect(mThread,SIGNAL(started()),mWorker,SLOT(process()));
@@ -173,13 +173,15 @@ void MainWindow::resetNetwork()
 
 void MainWindow::resetUI()
 {
-    ui->lblOriginalImage->setText(" ");
+    //ui->lblOriginalImage->setText(" ");
     ui->lblCompressedImege->setText(" ");
 
     ui->btnStart->hide();
     ui->btnStop->hide();
     ui->btnReset->hide();
-    ui->btnInitNetwork->hide();
+    ui->btnInitNetwork->show();
+    ui->error->setText("");
+    ui->iteration->setText("");
 }
 
 

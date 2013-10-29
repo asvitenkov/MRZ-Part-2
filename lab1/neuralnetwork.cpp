@@ -21,8 +21,8 @@ CNeuralNetwork::~CNeuralNetwork()
 
 void CNeuralNetwork::initialize()
 {
-    mFirstLayerMatrix = arma::randu<arma::mat>(mSegmentLength, mSecondLayerCount) * 2 - 1;
-    mSecondLayerMatrix = arma::randu<arma::mat>(mSecondLayerCount, mSegmentLength) * 2 - 1;
+    mFirstLayerMatrix = arma::randu<Matrix2DF>(mSegmentLength, mSecondLayerCount) * 2 - 1;
+    mSecondLayerMatrix = arma::randu<Matrix2DF>(mSecondLayerCount, mSegmentLength) * 2 - 1;
 
     CCalculateError *error;
 
@@ -38,8 +38,6 @@ void CNeuralNetwork::initialize()
 
 double CNeuralNetwork::learn(const QVector<Segment *> &vector)
 {
-
-    mStep++;
 
     int size = vector.size();
     Segment* pSegment;
@@ -59,6 +57,11 @@ double CNeuralNetwork::learn(const QVector<Segment *> &vector)
 
         mSecondLayerMatrix = mSecondLayerMatrix - mAlpha * ( Y.t() * deltaX );
 
+        normalizeMatrix(mFirstLayerMatrix);
+        normalizeMatrix(mSecondLayerMatrix);
+
+//        std::cout << mFirstLayerMatrix;
+//        std::cout << mSecondLayerMatrix;
     }
 
     mStep++;
@@ -165,4 +168,20 @@ double CNeuralNetwork::getError(const QVector<Segment *> &vector) const
         }
 
    return error;
+}
+
+
+void CNeuralNetwork::normalizeMatrix(Matrix2DF &matrix)
+{
+
+
+//    Matrix2DF abs = arma::abs(matrix);
+
+//    double sum;
+//    for(int i=0; i< abs.n_cols; i++)
+//    {
+//        sum = arma::sum(abs.col(i));
+//        for(int j=0; j<abs.n_rows; j++)
+//            matrix(j,i) = matrix(j,i) / sum;
+//    }
 }

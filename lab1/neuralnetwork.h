@@ -7,7 +7,7 @@
 #include <QRunnable>
 
 
-typedef arma::mat Matrix2DF;
+//typedef arma::mat Matrix2DF;
 
 #define THREAD_COUNT 8
 
@@ -39,6 +39,7 @@ public:
     int getStep() const { return mStep; }
 private:
     void initialize();
+    void normalizeMatrix(Matrix2DF &matrix);
     int mStep;
 
     int mSegmentLength;

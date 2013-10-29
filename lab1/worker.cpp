@@ -11,9 +11,6 @@ CWorker::CWorker(CNeuralNetwork *network, QVector<Segment *> *vector, QObject *p
 
 void CWorker::process()
 {
-
-    double error;
-
     while(true)
     {
         if (mIsExit)
@@ -22,7 +19,8 @@ void CWorker::process()
         if (mIsStopped)
             mPauseCond.wait(&mSync);
         mSync.unlock();
-        error = mNetwork->learn(*mSegmantArray);
+        mNetwork->learn(*mSegmantArray);
+        mNetwork->getError(*mSegmantArray);
         if (!mDisableUpdate && mNetwork->getStep() % mUpdateStep == 0)
             emit stepOver();
 
