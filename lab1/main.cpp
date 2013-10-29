@@ -19,10 +19,6 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-//    mat A = randu<mat>(5,5) * 2 -1;
-//    double ac = accu(A);
-//    std::cout <<  A;
-
 //    QImage img("/home/aas/ns3.bmp");
 
 //    int ww = 8;
@@ -31,28 +27,20 @@ int main(int argc, char *argv[])
 //    CImage image = CImage::fromImage(img);
 //    QVector<Segment*>* vec = image.split(hh,ww);
 
-//    CNeuralNetwork network(ww*hh*3, 3, 0.000001);
+//    CNeuralNetwork network(ww*hh*3, 12, 0.0005);
 
 //    QTime start = QTime::currentTime();
 
-//    for(int i=0; i< 10000; i++)
+//    for(int i=0; i< 1000; i++)
+//    {
 //        /*qDebug() << "error " << */network.learn(*vec);
+//        network.getError(*vec);
+//    }
 //    QTime end = QTime::currentTime();
 
 //    qDebug() << start.msecsTo(end);
 
-//   QVector<Segment*>* res =  network.process(*vec);
-
-//   CImage result = CImage::unite(ww,hh, img.height(), img.width(),res);
-
-//   QImage resultImg = result.toImage();
-
-//   QLabel *pLbl = new QLabel;
-//   pLbl->setPixmap(QPixmap::fromImage(resultImg));
-
-
     MainWindow w;
-//    w.setCentralWidget(pLbl);
     w.show();
     
     return a.exec();

@@ -19,15 +19,26 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     
-private slots:
-    void tmpStep();
+public slots:
     void openFile();
+
+private slots:
+
     void setOriginalImage(const QImage &img) const;
     void setCompressedImage(const QImage &img) const;
     void errorNetwork(double error);
+    void onBtnInitNetwork();
 
     void start();
     void stop();
+    void resetNetwork();
+    void resetUI();
+    void onBtnReset();
+    void showCompressedImage();
+    void updateNetworkStateGUI();
+
+
+    void setUpdateStep();
 private:
     void initNetwork();
 

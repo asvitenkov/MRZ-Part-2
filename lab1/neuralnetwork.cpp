@@ -61,7 +61,7 @@ double CNeuralNetwork::learn(const QVector<Segment *> &vector)
 
     }
 
-    double error = 0;
+    mStep++;
 
 //    int part = size / THREAD_COUNT;
 
@@ -98,7 +98,7 @@ double CNeuralNetwork::learn(const QVector<Segment *> &vector)
 
     //qDebug() << "Error: " <<error;
 
-    return error;
+    return 0;
 }
 
 

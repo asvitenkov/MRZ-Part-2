@@ -17,19 +17,26 @@ public:
     
 signals:
     void errorValue(double error);
+    void stepOver();
     
 public slots:
     void process();
     void stop();
     void start();
+    void exit();
+    void setDisableUpdate(bool enable) { mDisableUpdate = enable; }
+    void setUpdateStep(int step ) { mUpdateStep = step; }
 
 private:
+    int mUpdateStep;
     QMutex mSync;
     QWaitCondition mPauseCond;
     bool mIsStopped;
+    bool mIsExit;
     CNeuralNetwork *mNetwork;
     QVector<Segment*>* mSegmantArray;
     QEventLoop mEventLoop;
+    bool mDisableUpdate;
 };
 
 #endif // WORKER_H

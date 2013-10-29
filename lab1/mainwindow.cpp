@@ -16,9 +16,17 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     connect(ui->actionOpen,SIGNAL(triggered()),this, SLOT(openFile()));
+    connect(ui->btnStart,SIGNAL(clicked()),this,SLOT(start()));
+    connect(ui->btnStop,SIGNAL(clicked()),this,SLOT(stop()));
+    connect(ui->btnReset,SIGNAL(clicked()),this,SLOT(onBtnReset()));
+    connect(ui->btnShowCompressedImg,SIGNAL(clicked()),this,SLOT(showCompressedImage()));
+    connect(ui->btnInitNetwork,SIGNAL(clicked()),this,SLOT(onBtnInitNetwork()));
+    connect(ui->updateStep,SIGNAL(valueChanged(int)),this,SLOT(setUpdateStep()));
 
-
-    connect(ui->pushButton,SIGNAL(clicked()),this,SLOT(tmpStep()));
+    ui->btnStart->hide();
+    ui->btnStop->hide();
+    ui->btnReset->hide();
+    ui->btnInitNetwork->hide();
 
 }
 
@@ -36,11 +44,20 @@ void MainWindow::openFile()
     if (mFilePath.isEmpty())
         return;
 
+    //resetNetwork();
+
     mOriginalImage = QImage(mFilePath);
+
+    onBtnReset();
+    //initNetwork();
+
+
 
     setOriginalImage(mOriginalImage);
 
-    initNetwork();
+    //ui->btnStart->show();
+    //ui->btnReset->show();
+    ui->btnInitNetwork->show();
 }
 
 
@@ -58,24 +75,8 @@ void MainWindow::setCompressedImage(const QImage &img) const
 
 void MainWindow::initNetwork()
 {
-    if (mNetwork)
-        delete mNetwork;
 
-    if (mSegmentsArray)
-    {
-        qDeleteAll(mSegmentsArray->begin(), mSegmentsArray->end());
-        mSegmentsArray->clear();
-        delete mSegmentsArray;
-    }
-
-    if(mNeuralImage)
-        delete mNeuralImage;
-
-    if(mWorker)
-        delete mWorker;
-
-    if(mThread)
-        delete mThread;
+    resetNetwork();
 
     mNetwork = new CNeuralNetwork(3 * ui->nValue->value() * ui->mValue->value(), ui->pValue->value(),ui->alphaValue->value());
 
@@ -84,47 +85,162 @@ void MainWindow::initNetwork()
 
     mWorker = new CWorker(mNetwork,mSegmentsArray);
 
-
-
     mThread = new QThread();
 
     mWorker->moveToThread(mThread);
-    mWorker->stop();
-
-    connect(ui->btnStart,SIGNAL(clicked()),this,SLOT(start()));
-    connect(ui->btnStop,SIGNAL(clicked()),this,SLOT(stop()));
+    mWorker->setUpdateStep(100);
+    //mWorker->stop();
 
     connect(mThread,SIGNAL(started()),mWorker,SLOT(process()));
 
     connect(mWorker,SIGNAL(errorValue(double)),this,SLOT(errorNetwork(double)));
     mThread->start(QThread::HighestPriority);
+
+    connect(mWorker,SIGNAL(stepOver()),this,SLOT(updateNetworkStateGUI()));
 }
 
-void MainWindow::tmpStep()
-{
+//void MainWindow::tmpStep()
+//{
 
-    double error = 100000;
+//    double error = 100000;
 
-    mThread->start();
+//    mThread->start();
 
-    QVector<Segment*>* newVec =  mNetwork->process(*mSegmentsArray);
+//    QVector<Segment*>* newVec =  mNetwork->process(*mSegmentsArray);
 
-    QImage newImg = CImage::unite(ui->nValue->value(), ui->mValue->value(), mOriginalImage.height(), mOriginalImage.width(), newVec).toImage();
+//    QImage newImg = CImage::unite(ui->nValue->value(), ui->mValue->value(), mOriginalImage.height(), mOriginalImage.width(), newVec).toImage();
 
-    setCompressedImage(newImg);
-}
+//    setCompressedImage(newImg);
+//}
 
 void MainWindow::errorNetwork(double error)
 {
-    qDebug() << error;
+    //qDebug() << error;
 }
 
 void MainWindow::start()
 {
-    mWorker->start();
+    if(mWorker)
+        mWorker->start();
+    ui->btnStart->hide();
+    ui->btnStop->show();
 }
 
 void MainWindow::stop()
 {
-    mWorker->stop();
+    if(mWorker)
+        mWorker->stop();
+    ui->btnStop->hide();
+    ui->btnStart->show();
+}
+
+
+void MainWindow::resetNetwork()
+{
+    //initNetwork();
+
+    if(mWorker)
+        mWorker->deleteLater();
+
+    if(mThread)
+    {
+        mThread->deleteLater();
+    }
+
+    if (mNetwork)
+        delete mNetwork;
+
+    if(mNeuralImage)
+        delete mNeuralImage;
+
+
+    if (mSegmentsArray)
+    {
+        qDeleteAll(mSegmentsArray->begin(), mSegmentsArray->end());
+        mSegmentsArray->clear();
+        delete mSegmentsArray;
+    }
+
+    mNetwork = 0;
+    mThread = 0;
+    mNeuralImage = 0;
+    mSegmentsArray = 0;
+    mWorker = 0;
+
+
+}
+
+
+void MainWindow::resetUI()
+{
+    ui->lblOriginalImage->setText(" ");
+    ui->lblCompressedImege->setText(" ");
+
+    ui->btnStart->hide();
+    ui->btnStop->hide();
+    ui->btnReset->hide();
+    ui->btnInitNetwork->hide();
+}
+
+
+void MainWindow::onBtnReset()
+{
+    stop();
+    if(mThread)
+        mThread->wait(1000);
+    resetNetwork();
+    resetUI();
+}
+
+
+void MainWindow::showCompressedImage()
+{
+
+    if(!mThread)
+        return;
+
+    stop();
+
+    mThread->wait(200);
+
+    QVector<Segment*>* newVec =  mNetwork->process(*mSegmentsArray);
+
+
+
+    QImage newImg = CImage::unite(ui->nValue->value(), ui->mValue->value(), mOriginalImage.height(), mOriginalImage.width(), newVec).toImage();
+
+    setCompressedImage(newImg);
+
+    qDeleteAll(newVec->begin(), newVec->end());
+    newVec->clear();
+    delete newVec;
+
+    start();
+}
+
+
+void MainWindow::onBtnInitNetwork()
+{
+    initNetwork();
+    ui->btnStart->show();
+    ui->btnReset->show();
+    ui->btnInitNetwork->hide();
+}
+
+
+
+void MainWindow::updateNetworkStateGUI()
+{
+    if(mWorker)
+    {
+        ui->error->setText(QString::number(mNetwork->getError(*mSegmentsArray)));
+        ui->iteration->setText(QString::number(mNetwork->getStep()));
+    }
+}
+
+
+void MainWindow::setUpdateStep()
+{
+    if(mWorker)
+        mWorker->setUpdateStep(ui->updateStep->value());
 }
