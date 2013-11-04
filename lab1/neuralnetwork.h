@@ -37,6 +37,10 @@ public:
     QVector<Segment*>* process(const QVector<Segment*> &vector) const ;
     double getError(const QVector<Segment*> &vector) const ;
     int getStep() const { return mStep; }
+
+    const Matrix2DF& firstLayerMatrix(){ return mFirstLayerMatrix; }
+    const Matrix2DF& secondLayerMatrix(){ return mSecondLayerMatrix; }
+
 private:
     void initialize();
     void normalizeMatrix(Matrix2DF &matrix);

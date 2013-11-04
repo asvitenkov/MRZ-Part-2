@@ -174,14 +174,15 @@ double CNeuralNetwork::getError(const QVector<Segment *> &vector) const
 void CNeuralNetwork::normalizeMatrix(Matrix2DF &matrix)
 {
 
+    Matrix2DF dMat = arma::pow(matrix,2);
 
-//    Matrix2DF abs = arma::abs(matrix);
-
-//    double sum;
-//    for(int i=0; i< abs.n_cols; i++)
-//    {
-//        sum = arma::sum(abs.col(i));
-//        for(int j=0; j<abs.n_rows; j++)
-//            matrix(j,i) = matrix(j,i) / sum;
-//    }
+    double sum;
+    for(int i=0; i<matrix.n_cols; i++)
+    {
+         sum = arma::accu(dMat.col(i));
+         for(int j=0; j<matrix.n_rows; j++)
+         {
+             matrix(j,i)/=sqrt(sum);
+         }
+    }
 }

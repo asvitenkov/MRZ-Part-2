@@ -2,6 +2,8 @@
 #include "ui_mainwindow.h"
 #include <QFileDialog>
 #include <QDebug>
+#include <QTextEdit>
+#include <QTextBrowser>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -22,6 +24,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->btnShowCompressedImg,SIGNAL(clicked()),this,SLOT(showCompressedImage()));
     connect(ui->btnInitNetwork,SIGNAL(clicked()),this,SLOT(onBtnInitNetwork()));
     connect(ui->updateStep,SIGNAL(valueChanged(int)),this,SLOT(setUpdateStep()));
+
+    connect(ui->actionShowFirstLayerMatrix,SIGNAL(triggered()),SLOT(showFirstLayerMatrix()));
+    connect(ui->actionShowSecondLayerMatrix,SIGNAL(triggered()),SLOT(showSecondLayerMatrix()));
 
     ui->btnStart->hide();
     ui->btnStop->hide();
@@ -97,6 +102,11 @@ void MainWindow::initNetwork()
     mThread->start(QThread::HighestPriority);
 
     connect(mWorker,SIGNAL(stepOver()),this,SLOT(updateNetworkStateGUI()));
+
+    double n = ui->nValue->value() * ui->mValue->value();
+    double l = mSegmentsArray->size();
+    double z =((n+l)*ui->pValue->value()+2)/(n*l);
+    ui->zValue->setText(QString::number(z,'f',5));
 }
 
 //void MainWindow::tmpStep()
@@ -132,6 +142,8 @@ void MainWindow::stop()
         mWorker->stop();
     ui->btnStop->hide();
     ui->btnStart->show();
+
+    updateNetworkStateGUI();
 }
 
 
@@ -174,14 +186,15 @@ void MainWindow::resetNetwork()
 void MainWindow::resetUI()
 {
     //ui->lblOriginalImage->setText(" ");
-    ui->lblCompressedImege->setText(" ");
+    ui->lblCompressedImege->clear();
 
     ui->btnStart->hide();
     ui->btnStop->hide();
     ui->btnReset->hide();
     ui->btnInitNetwork->show();
-    ui->error->setText("");
-    ui->iteration->setText("");
+    ui->error->clear();
+    ui->iteration->clear();
+    ui->zValue->clear();
 }
 
 
@@ -217,7 +230,10 @@ void MainWindow::showCompressedImage()
     newVec->clear();
     delete newVec;
 
-    start();
+    //Matrix2String(mNetwork->firstLayerMatrix());
+   // Matrix2String(mNetwork->secondLayerMatrix());
+
+    //start();
 }
 
 
@@ -245,4 +261,61 @@ void MainWindow::setUpdateStep()
 {
     if(mWorker)
         mWorker->setUpdateStep(ui->updateStep->value());
+}
+
+QString Matrix2String(const Matrix2DF &matrix)
+{
+    QString out;
+    QString tmp;
+
+    out+=QString("rows: %1 \ncols: %2\n").arg(QString::number(matrix.n_rows)).arg(QString::number(matrix.n_cols));
+
+    for(int i=0; i < matrix.n_rows; i++)
+    {
+        //out+=QString::number(i+1)+".   ";
+        for(int j=0; j< matrix.n_cols; j++)
+        {
+            tmp = QString::number(matrix(i,j),'f',4);
+            if(tmp.size() == 6)
+                tmp = " "+tmp;
+            out+=QString("%1     ").arg(tmp);
+        }
+        out+="\n";
+    }
+
+    return out;
+}
+
+
+
+void MainWindow::showFirstLayerMatrix()
+{
+    if(!mNetwork)
+        return;
+
+    stop();
+
+    QTextBrowser *br = new QTextBrowser;
+    br->setLineWrapMode(QTextEdit::NoWrap);
+    br->setWindowTitle("First layer matrix");
+
+    br->setText(Matrix2String(mNetwork->firstLayerMatrix()));
+
+    br->show();
+}
+
+void MainWindow::showSecondLayerMatrix()
+{
+    if(!mNetwork)
+        return;
+
+    stop();
+
+    QTextBrowser *br = new QTextBrowser;
+    br->setLineWrapMode(QTextEdit::NoWrap);
+    br->setWindowTitle("Second layer matrix");
+
+    br->setText(Matrix2String(mNetwork->secondLayerMatrix()));
+
+    br->show();
 }

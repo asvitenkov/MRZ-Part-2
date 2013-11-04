@@ -7,6 +7,8 @@
 #include "neuralnetwork.h"
 #include "worker.h"
 
+QString Matrix2String(const Matrix2DF &matrix);
+
 namespace Ui {
 class MainWindow;
 }
@@ -36,6 +38,8 @@ private slots:
     void onBtnReset();
     void showCompressedImage();
     void updateNetworkStateGUI();
+    void showFirstLayerMatrix();
+    void showSecondLayerMatrix();
 
 
     void setUpdateStep();

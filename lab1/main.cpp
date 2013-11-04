@@ -21,8 +21,17 @@ int main(int argc, char *argv[])
 
 //    mat A = randu<mat>(2,2);
 //    A.at(1,0) = 1;
-//    A.at(1,1) = 3.5;
-//    rowvec vvv = A.row(1);
+//    A.at(1,1) = 2;
+//    A.at(0,1) = 3;
+//    A.at(0,0) = 4;
+
+
+
+//    std::cout << A ;
+
+//    arma::eps(A.row(0));
+
+//    rowvec vvv = A.row(1).;
 //    double sum =  arma::sum(vvv);
 
 //    QImage img("/home/anton/projects/256.png");
@@ -37,10 +46,10 @@ int main(int argc, char *argv[])
 
 //    QTime start = QTime::currentTime();
 
-//    for(int i=0; i< 1000; i++)
+//    for(int i=0; i< 100; i++)
 //    {
 //        /*qDebug() << "error " << */network.learn(*vec);
-//        network.getError(*vec);
+//        //network.getError(*vec);
 //    }
 //    QTime end = QTime::currentTime();
 

@@ -7,11 +7,11 @@
     <x>0</x>
     <y>0</y>
     <width>492</width>
-    <height>276</height>
+    <height>302</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Neural Network</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
@@ -31,27 +31,6 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_3">
-            <property name="text">
-             <string>m</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="label_4">
-            <property name="text">
-             <string>p</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="label_5">
-            <property name="text">
-             <string>e</string>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="1">
            <widget class="QSpinBox" name="nValue">
             <property name="minimum">
@@ -59,6 +38,13 @@
             </property>
             <property name="value">
              <number>8</number>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_3">
+            <property name="text">
+             <string>m</string>
             </property>
            </widget>
           </item>
@@ -72,6 +58,13 @@
             </property>
            </widget>
           </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_4">
+            <property name="text">
+             <string>p</string>
+            </property>
+           </widget>
+          </item>
           <item row="2" column="1">
            <widget class="QSpinBox" name="pValue">
             <property name="minimum">
@@ -81,34 +74,24 @@
              <number>1000</number>
             </property>
             <property name="value">
-             <number>4</number>
+             <number>12</number>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_6">
+            <property name="text">
+             <string>alpha</string>
             </property>
            </widget>
           </item>
           <item row="3" column="1">
-           <widget class="QDoubleSpinBox" name="eValue">
-            <property name="decimals">
-             <number>5</number>
-            </property>
-            <property name="value">
-             <double>0.000100000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="1">
            <widget class="QDoubleSpinBox" name="alphaValue">
             <property name="decimals">
              <number>8</number>
             </property>
             <property name="minimum">
              <double>0.000001000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="0">
-           <widget class="QLabel" name="label_6">
-            <property name="text">
-             <string>alpha</string>
             </property>
            </widget>
           </item>
@@ -161,36 +144,17 @@
         </item>
         <item>
          <layout class="QFormLayout" name="formLayout_2">
-          <item row="0" column="0">
-           <widget class="QLabel" name="label">
-            <property name="text">
-             <string>Error</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_9">
-            <property name="text">
-             <string>Iteration</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QLineEdit" name="error">
-            <property name="readOnly">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QLineEdit" name="iteration">
-            <property name="readOnly">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
+          <property name="fieldGrowthPolicy">
+           <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+          </property>
           <item row="2" column="1">
            <widget class="QSpinBox" name="updateStep">
+            <property name="maximumSize">
+             <size>
+              <width>150</width>
+              <height>16777215</height>
+             </size>
+            </property>
             <property name="minimum">
              <number>1</number>
             </property>
@@ -198,10 +162,30 @@
              <number>999999999</number>
             </property>
             <property name="singleStep">
-             <number>100</number>
+             <number>10</number>
             </property>
             <property name="value">
              <number>100</number>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string>Error</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1">
+           <widget class="QLineEdit" name="error">
+            <property name="maximumSize">
+             <size>
+              <width>150</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="readOnly">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -209,6 +193,46 @@
            <widget class="QLabel" name="label_10">
             <property name="text">
              <string>update step</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_9">
+            <property name="text">
+             <string>Iteration</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QLineEdit" name="iteration">
+            <property name="maximumSize">
+             <size>
+              <width>150</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="0">
+           <widget class="QLabel" name="label_11">
+            <property name="text">
+             <string> Z</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="1">
+           <widget class="QLineEdit" name="zValue">
+            <property name="maximumSize">
+             <size>
+              <width>150</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="readOnly">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -302,7 +326,15 @@
     </property>
     <addaction name="actionOpen"/>
    </widget>
+   <widget class="QMenu" name="menuShow">
+    <property name="title">
+     <string>Show</string>
+    </property>
+    <addaction name="actionShowFirstLayerMatrix"/>
+    <addaction name="actionShowSecondLayerMatrix"/>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuShow"/>
   </widget>
   <action name="actionOpen">
    <property name="text">
@@ -310,6 +342,22 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="actionShowFirstLayerMatrix">
+   <property name="text">
+    <string>First layer matrix</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+1</string>
+   </property>
+  </action>
+  <action name="actionShowSecondLayerMatrix">
+   <property name="text">
+    <string>Second layer matrix</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+2</string>
    </property>
   </action>
  </widget>
