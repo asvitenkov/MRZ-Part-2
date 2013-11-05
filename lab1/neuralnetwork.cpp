@@ -24,14 +24,12 @@ void CNeuralNetwork::initialize()
     mFirstLayerMatrix = arma::randu<Matrix2DF>(mSegmentLength, mSecondLayerCount) * 2 - 1;
     mSecondLayerMatrix = arma::randu<Matrix2DF>(mSecondLayerCount, mSegmentLength) * 2 - 1;
 
-    CCalculateError *error;
+    for(int i=0; i<mFirstLayerMatrix.n_rows; i++)
+        for(int j=0; j<mFirstLayerMatrix.n_cols; j++)
+            mFirstLayerMatrix(i,j) = 0.02;
 
-    for(int i=0; i< THREAD_COUNT; i++)
-    {
-        error = new CCalculateError(&mFirstLayerMatrix, &mSecondLayerMatrix);
-        error->setAutoDelete(false);
-        mThreatArray.push_back(error);
-    }
+    mSecondLayerMatrix = mFirstLayerMatrix.t();
+
 }
 
 
@@ -60,46 +58,10 @@ double CNeuralNetwork::learn(const QVector<Segment *> &vector)
         normalizeMatrix(mFirstLayerMatrix);
         normalizeMatrix(mSecondLayerMatrix);
 
-//        std::cout << mFirstLayerMatrix;
-//        std::cout << mSecondLayerMatrix;
     }
 
     mStep++;
 
-//    int part = size / THREAD_COUNT;
-
-
-//    CCalculateError *pItem;
-//    QThreadPool *threadPool = QThreadPool::globalInstance();
-
-//    for(int i=0; i<THREAD_COUNT; i++)
-//    {
-//        pItem = mThreatArray.at(i);
-//        pItem->mFrom = part * i;
-//        pItem->mTo = (i+1) * part;
-//        //if(i == THREAD_COUNT -1 )
-//        //    pItem->mTo
-//        pItem->mSegmentArray = &vector;
-//        threadPool->start(pItem);
-//    }
-
-//    threadPool->waitForDone();
-
-//    for(int i=0; i<THREAD_COUNT; i++)
-//    {
-//        error = mThreatArray.at(i)->mError;
-//    }
-
-
-//    for(int i=0; i<size; i++)
-//    {
-//        pSegment = vector.at(i);
-//        Matrix2DF &X = *pSegment->mMatrix;
-//        deltaX = (X * mFirstLayerMatrix) * mSecondLayerMatrix - X;
-//        error += arma::accu(arma::pow(deltaX,2));
-//    }
-
-    //qDebug() << "Error: " <<error;
 
     return 0;
 }
@@ -139,17 +101,7 @@ CCalculateError::~CCalculateError()
 
 void CCalculateError::run()
 {
-    mError = 0;
-    Matrix2DF deltaX;
-    Matrix2DF *X;
-    Segment* pSegment;
-    for(int i=mFrom; i<mTo; i++)
-    {
-        pSegment = mSegmentArray->at(i);
-        X = pSegment->mMatrix;
-        deltaX = (*X * *mFirstMatrix) * *mSecondMatrix - *X;
-        mError += arma::accu(arma::pow(deltaX,2));
-    }
+
 }
 
 
@@ -179,10 +131,10 @@ void CNeuralNetwork::normalizeMatrix(Matrix2DF &matrix)
     double sum;
     for(int i=0; i<matrix.n_cols; i++)
     {
-         sum = arma::accu(dMat.col(i));
+         sum = sqrt(arma::accu(dMat.col(i)));
          for(int j=0; j<matrix.n_rows; j++)
          {
-             matrix(j,i)/=sqrt(sum);
+             matrix(j,i)/=sum;
          }
     }
 }

@@ -93,6 +93,9 @@
             <property name="minimum">
              <double>0.000001000000000</double>
             </property>
+            <property name="value">
+             <double>0.000500000000000</double>
+            </property>
            </widget>
           </item>
          </layout>

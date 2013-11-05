@@ -20,40 +20,40 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
 
 //    mat A = randu<mat>(2,2);
+//    A.at(0,0) = 1;
+//    A.at(0,1) = 2;
+//    A.at(0,2) = 3;
+
 //    A.at(1,0) = 1;
 //    A.at(1,1) = 2;
-//    A.at(0,1) = 3;
-//    A.at(0,0) = 4;
+//    A.at(1,2) = 3;
 
+//    A.at(2,0) = 1;
+//    A.at(2,1) = 2;
+//    A.at(2,2) = 3;
 
+//    std::cout << A / A.t() * A ;
 
-//    std::cout << A ;
+    QImage img("/home/anton/projects/256.png");
 
-//    arma::eps(A.row(0));
+    int ww = 8;
+    int hh = 8;
 
-//    rowvec vvv = A.row(1).;
-//    double sum =  arma::sum(vvv);
+    CImage image = CImage::fromImage(img);
+    QVector<Segment*>* vec = image.split(hh,ww);
 
-//    QImage img("/home/anton/projects/256.png");
+    CNeuralNetwork network(ww*hh*3, 12, 0.0005);
 
-//    int ww = 8;
-//    int hh = 8;
+    QTime start = QTime::currentTime();
 
-//    CImage image = CImage::fromImage(img);
-//    QVector<Segment*>* vec = image.split(hh,ww);
+    for(int i=0; i< 100; i++)
+    {
+        /*qDebug() << "error " << */network.learn(*vec);
+        network.getError(*vec);
+    }
+    QTime end = QTime::currentTime();
 
-//    CNeuralNetwork network(ww*hh*3, 12, 0.0005);
-
-//    QTime start = QTime::currentTime();
-
-//    for(int i=0; i< 100; i++)
-//    {
-//        /*qDebug() << "error " << */network.learn(*vec);
-//        //network.getError(*vec);
-//    }
-//    QTime end = QTime::currentTime();
-
-//    qDebug() << start.msecsTo(end);
+    qDebug() << start.msecsTo(end);
 
     MainWindow w;
     w.show();

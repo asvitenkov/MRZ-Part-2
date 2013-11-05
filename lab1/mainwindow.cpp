@@ -151,6 +151,15 @@ void MainWindow::resetNetwork()
 {
     //initNetwork();
 
+    for(int i=0; i<mOpenBrowserWindow.size(); i++)
+    {
+        QWidget *w = mOpenBrowserWindow.at(i);
+        w->hide();
+        delete w;
+    }
+
+    mOpenBrowserWindow.clear();
+
     if(mWorker)
         mWorker->deleteLater();
 
@@ -302,6 +311,8 @@ void MainWindow::showFirstLayerMatrix()
     br->setText(Matrix2String(mNetwork->firstLayerMatrix()));
 
     br->show();
+
+    mOpenBrowserWindow.push_back(br);
 }
 
 void MainWindow::showSecondLayerMatrix()
@@ -318,4 +329,5 @@ void MainWindow::showSecondLayerMatrix()
     br->setText(Matrix2String(mNetwork->secondLayerMatrix()));
 
     br->show();
+    mOpenBrowserWindow.push_back(br);
 }

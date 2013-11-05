@@ -53,6 +53,7 @@ private:
     CNeuralNetwork *mNetwork;
     CImage* mNeuralImage;
     QVector<Segment*>* mSegmentsArray;
+    QVector<QWidget*> mOpenBrowserWindow;
     CWorker* mWorker;
     QThread* mThread;
 };
