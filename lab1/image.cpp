@@ -56,7 +56,12 @@ double CImage::encodeColor(int color)
 
 double CImage::decodeColor(double color)
 {
-    return 255 * (color + 1) / 2;
+    double val = 255 * (color + 1) / 2;
+
+    if(val < 0 ) return 0;
+    if(val >255) return 255;
+
+    return val;
 }
 
 QImage CImage::toImage(const Matrix2DF &matrix)
