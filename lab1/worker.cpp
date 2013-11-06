@@ -20,7 +20,6 @@ void CWorker::process()
             mPauseCond.wait(&mSync);
         mSync.unlock();
         mNetwork->learn(*mSegmantArray);
-        mNetwork->getError(*mSegmantArray);
         if (!mDisableUpdate && mNetwork->getStep() % mUpdateStep == 0)
             emit stepOver();
 
