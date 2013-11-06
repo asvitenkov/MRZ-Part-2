@@ -11,22 +11,6 @@
 
 #define THREAD_COUNT 8
 
-class CCalculateError: public QRunnable
-{
-public:
-    CCalculateError(Matrix2DF *fMatrix, Matrix2DF *sMatrix);
-    virtual ~CCalculateError();
-    void run();
-
-    int mFrom;
-    int mTo;
-    int mError;
-    const QVector<Segment*>* mSegmentArray;
-    Matrix2DF *mFirstMatrix;
-    Matrix2DF *mSecondMatrix;
-};
-
-
 class CNeuralNetwork
 {
 public:
@@ -52,13 +36,6 @@ private:
 
     Matrix2DF mFirstLayerMatrix;
     Matrix2DF mSecondLayerMatrix;
-
-    QVector<CCalculateError*> mThreatArray;
-
-    //CCalculateError* mCError1;
-    //CCalculateError* mCError2;
-    //CCalculateError* mCError3;
-    //CCalculateError* mCError4;
 
 };
 

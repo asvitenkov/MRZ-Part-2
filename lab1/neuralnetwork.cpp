@@ -82,29 +82,6 @@ QVector<Segment*>* CNeuralNetwork::process(const QVector<Segment *> &vector) con
 }
 
 
-CCalculateError::CCalculateError(Matrix2DF *fMatrix, Matrix2DF *sMatrix)
-    : mFrom(0)
-    , mTo(0)
-    , mSegmentArray(0)
-    , mFirstMatrix(fMatrix)
-    , mSecondMatrix(sMatrix)
-{
-
-}
-
-
-
-CCalculateError::~CCalculateError()
-{
-
-}
-
-void CCalculateError::run()
-{
-
-}
-
-
 double CNeuralNetwork::getError(const QVector<Segment *> &vector) const
 {
     Segment* pSegment;
