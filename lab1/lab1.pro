@@ -13,20 +13,15 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
     image.cpp \
-    #array2d.inl
-    neuralnetwork.cpp \
-    worker.cpp
+    neuralnetwork.cpp
 
-HEADERS  += mainwindow.h \
-    image.h \
-    neuralnetwork.h \
-    worker.h
+HEADERS  +=    image.h \
+    neuralnetwork.h
 
-FORMS    += mainwindow.ui
+#FORMS    += mainwindow.ui
 
-LIBS     += -larmadillo
+#LIBS     += -larmadillo
 
 
 #QMAKE_LFLAGS_RELEASE += -O2
@@ -35,9 +30,10 @@ LIBS     += -larmadillo
 ##### -march=corei7-avx
 
 
-QMAKE_CXXFLAGS_RELEASE += -march=corei7-avx -DARMA_NO_DEBUG -m64
-QMAKE_CFLAGS_RELEASE += -march=corei7-avx -DARMA_NO_DEBUG -m64
+QMAKE_CXXFLAGS_RELEASE += -march=corei7-avx -DARMA_NO_DEBUG -m64 -DNDEBUG -pthread -O3
+QMAKE_CFLAGS_RELEASE += -march=corei7-avx -DARMA_NO_DEBUG -m64 -DNDEBUG -pthread -O3
 
+QMAKE_LFLAGS += -O3
 
 
 #CFLAGS        = -march=corei7-avx -pipe -O2
@@ -51,4 +47,15 @@ QMAKE_CFLAGS_RELEASE += -march=corei7-avx -DARMA_NO_DEBUG -m64
 #QMAKE_CXXFLAGS += -m64
 #QMAKE_LFLAGS += -m64
 #QMAKE_CFLAGS_RELEASE += m64
+
+
+unix:!macx:!symbian: LIBS += -L$$PWD/../../../armadillo-3.920.2/ -larmadillo
+
+INCLUDEPATH += $$PWD/../../../armadillo-3.920.2/include
+DEPENDPATH += $$PWD/../../../armadillo-3.920.2/include
+
+unix:!macx:!symbian: LIBS += -L$$PWD/../../../../foss/installed/openblas/lib/ -lopenblas
+
+INCLUDEPATH += $$PWD/../../../../foss/installed/openblas/include
+DEPENDPATH += $$PWD/../../../../foss/installed/openblas/include
 

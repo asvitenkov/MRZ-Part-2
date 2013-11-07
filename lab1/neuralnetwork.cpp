@@ -39,9 +39,11 @@ double CNeuralNetwork::learn(const QVector<Segment *> &vector)
 
     int size = vector.size();
     Segment* pSegment;
-    Matrix2DF Y;
-    Matrix2DF Xs;
-    Matrix2DF deltaX;
+    //Matrix2DF tY = Matrix2DF(1,12);
+    //Matrix2DF tXs = Matrix2DF(1,192);
+    Matrix2DF &Y = mFirstLayerMatrix;
+    Matrix2DF Xs = mFirstLayerMatrix;
+    Matrix2DF deltaX = mFirstLayerMatrix;
 
     for(int i=0; i<size; i++)
     {
@@ -51,12 +53,15 @@ double CNeuralNetwork::learn(const QVector<Segment *> &vector)
         Xs = Y * mSecondLayerMatrix;
         deltaX = Xs - X;
 
+
         mFirstLayerMatrix = mFirstLayerMatrix - mAlpha * ( X.t() * deltaX * ( mSecondLayerMatrix.t() ) );
 
         mSecondLayerMatrix = mSecondLayerMatrix - mAlpha * ( Y.t() * deltaX );
 
-        normalizeMatrix(mFirstLayerMatrix);
-        normalizeMatrix(mSecondLayerMatrix);
+        //qDebug() << mSecondLayerMatrix.n_rows << " " << mSecondLayerMatrix.n_cols;
+
+        //normalizeMatrix(mFirstLayerMatrix);
+        //normalizeMatrix(mSecondLayerMatrix);
 
     }
 
