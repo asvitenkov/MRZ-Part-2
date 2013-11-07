@@ -1,7 +1,15 @@
 #ifndef NEURALNETWORK_H
 #define NEURALNETWORK_H
 
+#include <armadillo>
 #include "image.h"
+
+#include <QRunnable>
+
+
+//typedef arma::mat Matrix2DF;
+
+#define THREAD_COUNT 8
 
 class CNeuralNetwork
 {
@@ -20,12 +28,11 @@ public:
 private:
     void initialize();
     void normalizeMatrix(Matrix2DF &matrix);
-
+    int mStep;
 
     int mSegmentLength;
     int mSecondLayerCount;
     double mAlpha;
-    int mStep;
 
     Matrix2DF mFirstLayerMatrix;
     Matrix2DF mSecondLayerMatrix;

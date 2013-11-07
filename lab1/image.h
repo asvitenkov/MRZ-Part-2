@@ -6,9 +6,8 @@
 #include <QVector>
 
 
-//typedef arma::mat Matrix2DF;
-typedef arma::fmat Matrix2DF;
-typedef arma::fmat::fixed<8,8> MatFix;
+typedef arma::mat Matrix2DF;
+//typedef arma::fmat Matrix2DF;
 
 class CNeuroPixel;
 class QImage;
