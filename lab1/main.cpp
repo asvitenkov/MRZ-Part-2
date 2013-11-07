@@ -2,14 +2,10 @@
 #include "mainwindow.h"
 
 #include <iostream>
-#include <armadillo>
 #include <QTime>
-#include "image.h"
-#include "neuralnetwork.h"
 
 
 //delete
-#include <QLabel>
 #include <QDebug>
 
 using namespace std;
@@ -19,41 +15,26 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-//    mat A = randu<mat>(2,2);
-//    A.at(0,0) = 1;
-//    A.at(0,1) = 2;
-//    A.at(0,2) = 3;
+//    QImage img("/home/anton/projects/256.png");
 
-//    A.at(1,0) = 1;
-//    A.at(1,1) = 2;
-//    A.at(1,2) = 3;
+//    int ww = 8;
+//    int hh = 8;
 
-//    A.at(2,0) = 1;
-//    A.at(2,1) = 2;
-//    A.at(2,2) = 3;
+//    CImage image = CImage::fromImage(img);
+//    QVector<Segment*>* vec = image.split(hh,ww);
 
-//    std::cout << A / A.t() * A ;
+//    CNeuralNetwork network(ww*hh*3, 12, 0.0005);
 
-    QImage img("/home/anton/projects/256.png");
+//    QTime start = QTime::currentTime();
 
-    int ww = 8;
-    int hh = 8;
+//    for(int i=0; i< 100; i++)
+//    {
+//        /*qDebug() << "error " << */network.learn(*vec);
+//        network.getError(*vec);
+//    }
+//    QTime end = QTime::currentTime();
 
-    CImage image = CImage::fromImage(img);
-    QVector<Segment*>* vec = image.split(hh,ww);
-
-    CNeuralNetwork network(ww*hh*3, 12, 0.0005);
-
-    QTime start = QTime::currentTime();
-
-    for(int i=0; i< 100; i++)
-    {
-        /*qDebug() << "error " << */network.learn(*vec);
-        network.getError(*vec);
-    }
-    QTime end = QTime::currentTime();
-
-    qDebug() << start.msecsTo(end);
+//    qDebug() << start.msecsTo(end);
 
     MainWindow w;
     w.show();

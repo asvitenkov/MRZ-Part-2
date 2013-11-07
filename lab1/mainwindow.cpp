@@ -1,8 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QFileDialog>
-#include <QDebug>
-#include <QTextEdit>
 #include <QTextBrowser>
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -123,10 +121,6 @@ void MainWindow::initNetwork()
 //    setCompressedImage(newImg);
 //}
 
-void MainWindow::errorNetwork(double error)
-{
-    //qDebug() << error;
-}
 
 void MainWindow::start()
 {
@@ -231,7 +225,7 @@ void MainWindow::showCompressedImage()
 
 
 
-    QImage newImg = CImage::unite(ui->nValue->value(), ui->mValue->value(), mOriginalImage.height(), mOriginalImage.width(), newVec).toImage();
+    QImage newImg = CImage::unite(mOriginalImage.height(), mOriginalImage.width(), newVec).toImage();
 
     setCompressedImage(newImg);
 
@@ -279,10 +273,10 @@ QString Matrix2String(const Matrix2DF &matrix)
 
     out+=QString("rows: %1 \ncols: %2\n").arg(QString::number(matrix.n_rows)).arg(QString::number(matrix.n_cols));
 
-    for(int i=0; i < matrix.n_rows; i++)
+    for(uint i=0; i < matrix.n_rows; i++)
     {
         //out+=QString::number(i+1)+".   ";
-        for(int j=0; j< matrix.n_cols; j++)
+        for(uint j=0; j< matrix.n_cols; j++)
         {
             tmp = QString::number(matrix(i,j),'f',4);
             if(tmp.size() == 6)

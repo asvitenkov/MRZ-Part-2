@@ -28,12 +28,12 @@ public:
 private:
     void initialize();
     void normalizeMatrix(Matrix2DF &matrix);
-    int mStep;
+
 
     int mSegmentLength;
     int mSecondLayerCount;
     double mAlpha;
-
+    int mStep;
     Matrix2DF mFirstLayerMatrix;
     Matrix2DF mSecondLayerMatrix;
 

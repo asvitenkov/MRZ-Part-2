@@ -1,7 +1,5 @@
 #include "worker.h"
 
-#include "neuralnetwork.h"
-
 CWorker::CWorker(CNeuralNetwork *network, QVector<Segment *> *vector, QObject *parent) :
     QObject(parent), mNetwork(network), mIsStopped(true), mSegmantArray(vector), mIsExit(false), mDisableUpdate(false), mUpdateStep(1)
 {

@@ -6,8 +6,8 @@
 #include <QVector>
 
 
-typedef arma::mat Matrix2DF;
-//typedef arma::fmat Matrix2DF;
+//typedef arma::mat Matrix2DF;
+typedef arma::fmat Matrix2DF;
 
 class CNeuroPixel;
 class QImage;
@@ -58,7 +58,7 @@ public:
     static QImage toImage(const Matrix2DF &matrix);
 
     QVector<Segment*> *split(int r, int c) ;
-    static CImage unite(int sr, int sc, int imgHeight, int imgWidth, const QVector<Segment *> *vec);
+    static CImage unite(int imgHeight, int imgWidth, const QVector<Segment *> *vec);
 
     QImage toImage() const;
 
