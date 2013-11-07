@@ -35,15 +35,13 @@ double CNeuralNetwork::learn(const QVector<Segment *> &vector)
 {
 
     int size = vector.size();
-    Segment* pSegment;
     Matrix2DF Y;
     Matrix2DF Xs;
     Matrix2DF deltaX;
 
     for(int i=0; i<size; i++)
     {
-        pSegment = vector.at(i);
-        Matrix2DF &X = *pSegment->mMatrix;
+        Matrix2DF &X = *(vector.at(i)->mMatrix);
         Y = X * mFirstLayerMatrix;
         Xs = Y * mSecondLayerMatrix;
         deltaX = Xs - X;
@@ -81,16 +79,13 @@ QVector<Segment*>* CNeuralNetwork::process(const QVector<Segment *> &vector) con
 
 double CNeuralNetwork::getError(const QVector<Segment *> &vector) const
 {
-    Segment* pSegment;
-    Matrix2DF deltaX;
     double error = 0;
     int size = vector.size();
         for(int i=0; i<size; i++)
         {
-            pSegment = vector.at(i);
-            Matrix2DF &X = *pSegment->mMatrix;
-            deltaX = (X * mFirstLayerMatrix) * mSecondLayerMatrix - X;
-            error += arma::accu(arma::pow(deltaX,2));
+            Matrix2DF &X = *(vector.at(i)->mMatrix);
+            //deltaX = (X * mFirstLayerMatrix) * mSecondLayerMatrix - X;
+            error += arma::accu(arma::pow((X * mFirstLayerMatrix) * mSecondLayerMatrix - X,2));
         }
 
    return error;
@@ -106,9 +101,10 @@ void CNeuralNetwork::normalizeMatrix(Matrix2DF &matrix)
     for(uint i=0; i<matrix.n_cols; i++)
     {
          sum = sqrt(arma::accu(dMat.col(i)));
-         for(uint j=0; j<matrix.n_rows; j++)
-         {
-             matrix(j,i)/=sum;
-         }
+         matrix.col(i)/=sum;
+//         for(uint j=0; j<matrix.n_rows; j++)
+//         {
+//             matrix(j,i)/=sum;
+//         }
     }
 }

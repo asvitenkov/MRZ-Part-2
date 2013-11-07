@@ -31,13 +31,13 @@ QMAKE_CFLAGS_RELEASE += -march=corei7-avx -DARMA_NO_DEBUG -m64 -DNDEBUG -pthread
 QMAKE_LFLAGS += -O3
 
 
-unix:!macx:!symbian: LIBS += -L$$PWD/../../../armadillo-3.920.2/ -larmadillo
-
-INCLUDEPATH += $$PWD/../../../armadillo-3.920.2/include
-DEPENDPATH += $$PWD/../../../armadillo-3.920.2/include
 
 unix:!macx:!symbian: LIBS += -L$$PWD/../../../../foss/installed/openblas/lib/ -lopenblas
 
 INCLUDEPATH += $$PWD/../../../../foss/installed/openblas/include
 DEPENDPATH += $$PWD/../../../../foss/installed/openblas/include
 
+unix:!macx:!symbian: LIBS += -L$$PWD/../../../armadillo-3.920.2/ -larmadillo
+
+INCLUDEPATH += $$PWD/../../../armadillo-3.920.2/include
+DEPENDPATH += $$PWD/../../../armadillo-3.920.2/include

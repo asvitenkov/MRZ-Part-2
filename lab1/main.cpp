@@ -5,6 +5,7 @@
 #include <QTime>
 #include "neuralnetwork.h"
 
+#include <cblas.h>
 
 //delete
 #include <QDebug>
@@ -31,6 +32,8 @@ int main(int argc, char *argv[])
 
 //    std::cout << A / A.t() * A ;
 
+    goto_set_num_threads(1);
+
     QImage img("/home/anton/projects/256.png");
 
     int ww = 8;
@@ -39,7 +42,7 @@ int main(int argc, char *argv[])
     CImage image = CImage::fromImage(img);
     QVector<Segment*>* vec = image.split(hh,ww);
 
-    CNeuralNetwork network(ww*hh*3, 12, 0.0005);
+    CNeuralNetwork network(ww*hh*3, 12, 0.0000001);
 
     QTime start = QTime::currentTime();
 
