@@ -1,8 +1,5 @@
 #include "image.h"
 #include <QImage>
-#include <armadillo>
-
-#include <QDebug>
 
 CImage::CImage()
 {
@@ -122,6 +119,9 @@ QVector<Segment *> *CImage::split(int r, int c)
 CImage CImage::unite(int sr, int sc, int imgHeight, int imgWidth, const QVector<Segment *> *vec)
 {
     Q_ASSERT(!vec->isEmpty());
+
+    Q_UNUSED(sr);
+    Q_UNUSED(sc);
 
     if(vec->isEmpty())
         return CImage();
