@@ -102,6 +102,8 @@ void CNeuralNetwork::normalizeMatrix(Matrix2DF &matrix)
     {
          sum = sqrt(arma::accu(dMat.col(i)));
          matrix.col(i)/=sum;
+
+
 //         for(uint j=0; j<matrix.n_rows; j++)
 //         {
 //             matrix(j,i)/=sum;

@@ -3,7 +3,6 @@
 
 #include <iostream>
 #include <QTime>
-#include "neuralnetwork.h"
 
 #include <cblas.h>
 
@@ -17,20 +16,7 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-//    mat A = randu<mat>(2,2);
-//    A.at(0,0) = 1;
-//    A.at(0,1) = 2;
-//    A.at(0,2) = 3;
-
-//    A.at(1,0) = 1;
-//    A.at(1,1) = 2;
-//    A.at(1,2) = 3;
-
-//    A.at(2,0) = 1;
-//    A.at(2,1) = 2;
-//    A.at(2,2) = 3;
-
-//    std::cout << A / A.t() * A ;
+    goto_set_num_threads(1);
 
     goto_set_num_threads(1);
 

@@ -58,7 +58,7 @@ public:
     static QImage toImage(const Matrix2DF &matrix);
 
     QVector<Segment*> *split(int r, int c) ;
-    static CImage unite(int sr, int sc, int imgHeight, int imgWidth, const QVector<Segment *> *vec);
+    static CImage unite(int imgHeight, int imgWidth, const QVector<Segment *> *vec);
 
     QImage toImage() const;
 

@@ -29,15 +29,19 @@ public slots:
 
 private:
 
-    QMutex mSync;
-    QWaitCondition mPauseCond;
     CNeuralNetwork *mNetwork;
+
     QVector<Segment*>* mSegmantArray;
-    QEventLoop mEventLoop;
+
     bool mIsStopped;
     bool mIsExit;
     bool mDisableUpdate;
+
     int mUpdateStep;
+    QMutex mSync;
+    QWaitCondition mPauseCond;
+    QEventLoop mEventLoop;
+
 };
 
 #endif // WORKER_H

@@ -4,7 +4,6 @@
 #include <QMainWindow>
 #include <QImage>
 #include <QThread>
-#include "neuralnetwork.h"
 #include "worker.h"
 
 QString Matrix2String(const Matrix2DF &matrix);
@@ -28,7 +27,6 @@ private slots:
 
     void setOriginalImage(const QImage &img) const;
     void setCompressedImage(const QImage &img) const;
-    void errorNetwork(double error);
     void onBtnInitNetwork();
 
     void start();
