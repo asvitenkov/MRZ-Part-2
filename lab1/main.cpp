@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <QTime>
-
+#include <cblas.h>
 
 //delete
 #include <QDebug>
@@ -15,26 +15,28 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-//    QImage img("/home/anton/projects/256.png");
+    goto_set_num_threads(1);
 
-//    int ww = 8;
-//    int hh = 8;
+    QImage img("/home/anton/projects/256.png");
 
-//    CImage image = CImage::fromImage(img);
-//    QVector<Segment*>* vec = image.split(hh,ww);
+    int ww = 8;
+    int hh = 8;
 
-//    CNeuralNetwork network(ww*hh*3, 12, 0.0005);
+    CImage image = CImage::fromImage(img);
+    QVector<Segment*>* vec = image.split(hh,ww);
 
-//    QTime start = QTime::currentTime();
+    CNeuralNetwork network(ww*hh*3, 12, 0.0005);
 
-//    for(int i=0; i< 100; i++)
-//    {
-//        /*qDebug() << "error " << */network.learn(*vec);
-//        network.getError(*vec);
-//    }
-//    QTime end = QTime::currentTime();
+    QTime start = QTime::currentTime();
 
-//    qDebug() << start.msecsTo(end);
+    for(int i=0; i< 100; i++)
+    {
+        /*qDebug() << "error " << */network.learn(*vec);
+        network.getError(*vec);
+    }
+    QTime end = QTime::currentTime();
+
+    qDebug() << start.msecsTo(end);
 
     MainWindow w;
     w.show();

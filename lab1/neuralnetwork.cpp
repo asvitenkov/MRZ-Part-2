@@ -53,8 +53,8 @@ double CNeuralNetwork::learn(const QVector<Segment *> &vector)
 
         mSecondLayerMatrix = mSecondLayerMatrix - mAlpha * ( Y.t() * deltaX );
 
-        normalizeMatrix(mFirstLayerMatrix);
-        normalizeMatrix(mSecondLayerMatrix);
+        //normalizeMatrix(mFirstLayerMatrix);
+        //normalizeMatrix(mSecondLayerMatrix);
 
     }
 
