@@ -1,8 +1,5 @@
 #include "neuralnetwork.h"
 
-#include <QDebug>
-#include <QThreadPool>
-
 CNeuralNetwork::CNeuralNetwork(int segmantLength, int secondLayerCount, double alpha)
     : mSegmentLength(segmantLength)
     , mSecondLayerCount(secondLayerCount)
@@ -24,8 +21,8 @@ void CNeuralNetwork::initialize()
     mFirstLayerMatrix = arma::randu<Matrix2DF>(mSegmentLength, mSecondLayerCount) * 2 - 1;
     mSecondLayerMatrix = arma::randu<Matrix2DF>(mSecondLayerCount, mSegmentLength) * 2 - 1;
 
-    for(int i=0; i<mFirstLayerMatrix.n_rows; i++)
-        for(int j=0; j<mFirstLayerMatrix.n_cols; j++)
+    for(uint i=0; i<mFirstLayerMatrix.n_rows; i++)
+        for(uint j=0; j<mFirstLayerMatrix.n_cols; j++)
             mFirstLayerMatrix(i,j) = 0.02;
 
     mSecondLayerMatrix = mFirstLayerMatrix.t();
@@ -55,8 +52,8 @@ double CNeuralNetwork::learn(const QVector<Segment *> &vector)
 
         mSecondLayerMatrix = mSecondLayerMatrix - mAlpha * ( Y.t() * deltaX );
 
-        normalizeMatrix(mFirstLayerMatrix);
-        normalizeMatrix(mSecondLayerMatrix);
+        //normalizeMatrix(mFirstLayerMatrix);
+        //normalizeMatrix(mSecondLayerMatrix);
 
     }
 
@@ -106,10 +103,10 @@ void CNeuralNetwork::normalizeMatrix(Matrix2DF &matrix)
     Matrix2DF dMat = arma::pow(matrix,2);
 
     double sum;
-    for(int i=0; i<matrix.n_cols; i++)
+    for(uint i=0; i<matrix.n_cols; i++)
     {
          sum = sqrt(arma::accu(dMat.col(i)));
-         for(int j=0; j<matrix.n_rows; j++)
+         for(uint j=0; j<matrix.n_rows; j++)
          {
              matrix(j,i)/=sum;
          }

@@ -28,15 +28,16 @@ public slots:
     void setUpdateStep(int step ) { mUpdateStep = step; }
 
 private:
-    int mUpdateStep;
+
     QMutex mSync;
     QWaitCondition mPauseCond;
-    bool mIsStopped;
-    bool mIsExit;
     CNeuralNetwork *mNetwork;
     QVector<Segment*>* mSegmantArray;
     QEventLoop mEventLoop;
+    bool mIsStopped;
+    bool mIsExit;
     bool mDisableUpdate;
+    int mUpdateStep;
 };
 
 #endif // WORKER_H

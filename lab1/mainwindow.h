@@ -48,14 +48,15 @@ private:
 
 
     Ui::MainWindow *ui;
+    CNeuralNetwork *mNetwork;
+    QVector<Segment*>* mSegmentsArray;
+    CWorker* mWorker;
+    CImage* mNeuralImage;
+    QThread* mThread;
+
     QString mFilePath;
     QImage mOriginalImage;
-    CNeuralNetwork *mNetwork;
-    CImage* mNeuralImage;
-    QVector<Segment*>* mSegmentsArray;
     QVector<QWidget*> mOpenBrowserWindow;
-    CWorker* mWorker;
-    QThread* mThread;
 };
 
 #endif // MAINWINDOW_H

@@ -2,14 +2,11 @@
 #include "mainwindow.h"
 
 #include <iostream>
-#include <armadillo>
 #include <QTime>
-#include "image.h"
 #include "neuralnetwork.h"
 
 
 //delete
-#include <QLabel>
 #include <QDebug>
 
 using namespace std;
