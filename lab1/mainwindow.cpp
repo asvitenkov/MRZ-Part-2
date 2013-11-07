@@ -96,7 +96,6 @@ void MainWindow::initNetwork()
 
     connect(mThread,SIGNAL(started()),mWorker,SLOT(process()));
 
-    connect(mWorker,SIGNAL(errorValue(double)),this,SLOT(errorNetwork(double)));
     mThread->start(QThread::HighestPriority);
 
     connect(mWorker,SIGNAL(stepOver()),this,SLOT(updateNetworkStateGUI()));
