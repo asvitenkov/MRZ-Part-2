@@ -1,5 +1,5 @@
-#ifndef FIRSTREPORT_H
-#define FIRSTREPORT_H
+#ifndef FOURTHREPORT_H
+#define FOURTHREPORT_H
 
 
 #include <QFile>
@@ -8,14 +8,14 @@
 
 #include <QObject>
 
-class FirstReport: public QObject
+class FourthReport: public QObject
 {
 
     Q_OBJECT
 
 public:
-    FirstReport(int n, int m, double error, double alpha, const QVector<int> &pValues, const QString &img,const QString &outFileName, bool multithreadingEnabled = true);
-    virtual ~FirstReport();
+    FourthReport(int n, int m, double error, const QVector<double> &alphaValues, int pValue, const QString &img,const QString &outFileName, bool multithreadingEnabled = true);
+    virtual ~FourthReport();
 
     void run();
 
@@ -27,11 +27,11 @@ private:
     void runMultiThread();
 
 
-    QVector<int> mPValues;
+    int mPValue;
     double mError;
     int mN;
     int mM;
-    double mAlpha;
+    QVector<double> mAlphaValues;
     bool mMultithreadingEnable;
     QString mOutFileName;
     QFile mFile;
@@ -39,4 +39,4 @@ private:
     QFutureWatcher<QString> mWatcher;
 };
 
-#endif // FIRSTREPORT_H
+#endif // FOURTHREPORT_H

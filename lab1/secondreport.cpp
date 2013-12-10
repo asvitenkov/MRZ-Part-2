@@ -1,40 +1,41 @@
 #include "defines.h"
 
-#include "firstreport.h"
+#include "secondreport.h"
 
 #include "neuralnetwork.h"
 
 #include <QtCore>
 
 
-FirstReport::FirstReport(int n, int m, double error, double alpha, const QVector<int> &pValues, const QString &img, const QString &outFileName, bool multithreadingEnabled)
+
+
+SecondReport::SecondReport(int n, int m, double error, double alpha, int pValue, const QVector<QString> &images, const QString &outFileName, bool multithreadingEnabled)
     : QObject(0)
 {
     mM = m;
     mN = n;
     mError = error;
     mAlpha = alpha;
-    mPValues = pValues;
+    mPValue = pValue;
     mOutFileName = outFileName;
-    mImgName = img;
+    mImagesNames = images;
     mMultithreadingEnable = multithreadingEnabled;
-
 }
 
 
-FirstReport::~FirstReport()
+SecondReport::~SecondReport()
 {
 
 }
 
-void FirstReport::run()
+void SecondReport::run()
 {
     if (mMultithreadingEnable)
         runMultiThread();
     else runSingleThread();
 }
 
-void FirstReport::executeSingleThread(int n, int m, double error, double alpha, int pValue, const QImage &img, QTextStream &out)
+void SecondReport::executeSingleThread(int n, int m, double error, double alpha, int pValue, const QImage &img, QTextStream &out)
 {
         CImage image = CImage::fromImage(img);
         QVector<Segment*>* vec = image.split(n,m);
@@ -54,8 +55,6 @@ void FirstReport::executeSingleThread(int n, int m, double error, double alpha, 
         qDeleteAll(vec->begin(),vec->end());
 
         delete vec;
-
-
 
         out << QString("%1, %2, %3, %4, %5, %6, %7\n")
                                .arg(QString::number(n))
@@ -77,15 +76,8 @@ void FirstReport::executeSingleThread(int n, int m, double error, double alpha, 
 }
 
 
-void FirstReport::runSingleThread()
+void SecondReport::runSingleThread()
 {
-    QImage img(mImgName);
-
-    if (img.isNull())
-    {
-       qDebug() << QString("Can not open image %1").arg(mImgName);
-        return;
-    }
 
     mFile.setFileName(mOutFileName);
 
@@ -95,9 +87,19 @@ void FirstReport::runSingleThread()
 
     out << "N, M, P, Alpha, Error, Z, It\n";
 
-    for(int i=0; i<mPValues.size(); i++)
+    for(int i=0; i<mImagesNames.size(); i++)
     {
-        executeSingleThread(mN, mM, mError, mAlpha, mPValues[i], img, out);
+        QImage img(mImagesNames.at(i));
+
+        if (img.isNull())
+        {
+            qDebug() << QString("Can not open image %1").arg(mImagesNames[i]);
+        }
+        else
+        {
+            qDebug() << "IMAGE: " << mImagesNames.at(i);
+            executeSingleThread(mN, mM, mError, mAlpha, mPValue, img, out);
+        }
     }
 
     mFile.close();
@@ -105,7 +107,7 @@ void FirstReport::runSingleThread()
 
 
 
-void FirstReport::runMultiThread()
+void SecondReport::runMultiThread()
 {
     mFile.setFileName(mOutFileName);
 
@@ -117,8 +119,8 @@ void FirstReport::runMultiThread()
 
     QVector<LearnItem> list;
 
-    for(int i=0; i < mPValues.size(); i++)
-        list  << LearnItem(mN, mM, mError, mAlpha, mPValues[i], mImgName);
+    for(int i=0; i < mImagesNames.size(); i++)
+        list  << LearnItem(mN, mM, mError, mAlpha, mPValue, mImagesNames[i]);
 
     mWatcher.setFuture(QtConcurrent::mapped(list,ProcessLearnItem));
 
@@ -126,7 +128,7 @@ void FirstReport::runMultiThread()
     mWatcher.waitForFinished();
 
 
-    for(int i=0; i< mPValues.size(); i++)
+    for(int i=0; i< mImagesNames.size(); i++)
     {
         out << mWatcher.resultAt(i);
     }

@@ -1,6 +1,5 @@
-#ifndef FIRSTREPORT_H
-#define FIRSTREPORT_H
-
+#ifndef SECONDREPORT_H
+#define SECONDREPORT_H
 
 #include <QFile>
 #include <QTextStream>
@@ -8,14 +7,14 @@
 
 #include <QObject>
 
-class FirstReport: public QObject
+class SecondReport: public QObject
 {
 
     Q_OBJECT
 
 public:
-    FirstReport(int n, int m, double error, double alpha, const QVector<int> &pValues, const QString &img,const QString &outFileName, bool multithreadingEnabled = true);
-    virtual ~FirstReport();
+    SecondReport(int n, int m, double error, double alpha, int pValue, const QVector<QString> &images, const QString &outFileName, bool multithreadingEnabled = true);
+    virtual ~SecondReport();
 
     void run();
 
@@ -27,7 +26,8 @@ private:
     void runMultiThread();
 
 
-    QVector<int> mPValues;
+    int mPValue;
+    QVector<QString> mImagesNames;
     double mError;
     int mN;
     int mM;
@@ -35,8 +35,7 @@ private:
     bool mMultithreadingEnable;
     QString mOutFileName;
     QFile mFile;
-    QString mImgName;
     QFutureWatcher<QString> mWatcher;
 };
 
-#endif // FIRSTREPORT_H
+#endif // SECONDREPORT_H

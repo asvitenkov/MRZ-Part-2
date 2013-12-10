@@ -1,20 +1,20 @@
 #include "defines.h"
 
-#include "firstreport.h"
+#include "fourthreport.h"
 
 #include "neuralnetwork.h"
 
 #include <QtCore>
 
 
-FirstReport::FirstReport(int n, int m, double error, double alpha, const QVector<int> &pValues, const QString &img, const QString &outFileName, bool multithreadingEnabled)
+FourthReport::FourthReport(int n, int m, double error, const QVector<double> &alphaValues, int pValue, const QString &img, const QString &outFileName, bool multithreadingEnabled)
     : QObject(0)
 {
     mM = m;
     mN = n;
     mError = error;
-    mAlpha = alpha;
-    mPValues = pValues;
+    mAlphaValues = alphaValues;
+    mPValue = pValue;
     mOutFileName = outFileName;
     mImgName = img;
     mMultithreadingEnable = multithreadingEnabled;
@@ -22,19 +22,19 @@ FirstReport::FirstReport(int n, int m, double error, double alpha, const QVector
 }
 
 
-FirstReport::~FirstReport()
+FourthReport::~FourthReport()
 {
 
 }
 
-void FirstReport::run()
+void FourthReport::run()
 {
     if (mMultithreadingEnable)
         runMultiThread();
     else runSingleThread();
 }
 
-void FirstReport::executeSingleThread(int n, int m, double error, double alpha, int pValue, const QImage &img, QTextStream &out)
+void FourthReport::executeSingleThread(int n, int m, double error, double alpha, int pValue, const QImage &img, QTextStream &out)
 {
         CImage image = CImage::fromImage(img);
         QVector<Segment*>* vec = image.split(n,m);
@@ -77,7 +77,7 @@ void FirstReport::executeSingleThread(int n, int m, double error, double alpha, 
 }
 
 
-void FirstReport::runSingleThread()
+void FourthReport::runSingleThread()
 {
     QImage img(mImgName);
 
@@ -95,9 +95,9 @@ void FirstReport::runSingleThread()
 
     out << "N, M, P, Alpha, Error, Z, It\n";
 
-    for(int i=0; i<mPValues.size(); i++)
+    for(int i=0; i<mAlphaValues.size(); i++)
     {
-        executeSingleThread(mN, mM, mError, mAlpha, mPValues[i], img, out);
+        executeSingleThread(mN, mM, mError, mAlphaValues[i], mPValue, img, out);
     }
 
     mFile.close();
@@ -105,7 +105,7 @@ void FirstReport::runSingleThread()
 
 
 
-void FirstReport::runMultiThread()
+void FourthReport::runMultiThread()
 {
     mFile.setFileName(mOutFileName);
 
@@ -117,8 +117,8 @@ void FirstReport::runMultiThread()
 
     QVector<LearnItem> list;
 
-    for(int i=0; i < mPValues.size(); i++)
-        list  << LearnItem(mN, mM, mError, mAlpha, mPValues[i], mImgName);
+    for(int i=0; i < mAlphaValues.size(); i++)
+        list  << LearnItem(mN, mM, mError, mAlphaValues[i], mPValue, mImgName);
 
     mWatcher.setFuture(QtConcurrent::mapped(list,ProcessLearnItem));
 
@@ -126,7 +126,7 @@ void FirstReport::runMultiThread()
     mWatcher.waitForFinished();
 
 
-    for(int i=0; i< mPValues.size(); i++)
+    for(int i=0; i< mAlphaValues.size(); i++)
     {
         out << mWatcher.resultAt(i);
     }

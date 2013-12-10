@@ -5,9 +5,14 @@
 #include <QTime>
 
 #include <cblas.h>
+#include "firstreport.h"
+#include "secondreport.h"
+#include "thirdreport.h"
+#include "fourthreport.h"
 
 //delete
 #include <QDebug>
+#include <QFile>
 
 using namespace std;
 using namespace arma;
@@ -18,31 +23,35 @@ int main(int argc, char *argv[])
 
     goto_set_num_threads(1);
 
-    goto_set_num_threads(1);
+//    QVector<int> pVal;
+//    pVal << 12 << 14 << 16  << 20 << 24 << 28 << 32 << 40 << 50 << 60;
+//    FirstReport firstReport(8, 8, 2000, 0.00005, pVal,":/images/1.jpg","firstReport.cvs");
+//    firstReport.run();
 
-    QImage img("/home/anton/projects/256.png");
 
-    int ww = 8;
-    int hh = 8;
+//    QVector<QString> images;
+//    images << ":/images/1.jpg"
+//           << ":/images/2.jpg"
+//           << ":/images/3.jpg"
+//           << ":/images/4.jpg"
+//           << ":/images/5.jpg" ;
+//    SecondReport secondReport(8, 8, 1700.0, 0.00005, 16, images,"secondReport.cvs");
+//    secondReport.run();
 
-    CImage image = CImage::fromImage(img);
-    QVector<Segment*>* vec = image.split(hh,ww);
+//    ThirdReport thirdReport(8,8,1200,0.00005,16,100,":/images/1.jpg","thirdReport.cvs");
+//    thirdReport.run();
 
-    CNeuralNetwork network(ww*hh*3, 12, 0.0000001);
+//    QVector<double> alphaValues;
+//    alphaValues << 0.00005 << 0.00007 << 0.00009 << 0.0001 << 0.0003 << 0.0005 << 0.0007 << 0.0009 << 0.001;
+//    FourthReport fourthReport(8,8,1500,alphaValues,16,":/images/1.jpg","fourthReport.cvs");
+//    fourthReport.run();
 
-    QTime start = QTime::currentTime();
-
-    for(int i=0; i< 100; i++)
-    {
-        /*qDebug() << "error " << */network.learn(*vec);
-        network.getError(*vec);
-    }
-    QTime end = QTime::currentTime();
-
-    qDebug() << start.msecsTo(end);
+//    return 0;
 
     MainWindow w;
     w.show();
     
     return a.exec();
+
+
 }
