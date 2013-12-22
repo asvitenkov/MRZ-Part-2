@@ -4,7 +4,7 @@
 
 #include "neuralnetwork.h"
 
-#include <QtCore>
+#include <QtCore/qtconcurrentmap.h>
 
 
 FirstReport::FirstReport(int n, int m, double error, double alpha, const QVector<int> &pValues, const QString &img, const QString &outFileName, bool multithreadingEnabled)

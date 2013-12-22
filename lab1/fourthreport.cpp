@@ -4,7 +4,7 @@
 
 #include "neuralnetwork.h"
 
-#include <QtCore>
+#include <QtCore/qtconcurrentmap.h>
 
 
 FourthReport::FourthReport(int n, int m, double error, const QVector<double> &alphaValues, int pValue, const QString &img, const QString &outFileName, bool multithreadingEnabled)

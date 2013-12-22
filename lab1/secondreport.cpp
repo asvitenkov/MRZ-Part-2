@@ -4,7 +4,7 @@
 
 #include "neuralnetwork.h"
 
-#include <QtCore>
+#include <QtCore/qtconcurrentmap.h>
 
 
 
