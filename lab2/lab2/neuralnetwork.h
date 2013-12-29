@@ -15,6 +15,8 @@ public:
     
     void learn(const QVector<double> &sequence);
 
+    QVector<double> predict(const QVector<double> &sequence, int count) const;
+
 signals:
     
 public slots:
@@ -22,9 +24,10 @@ public slots:
 private:
     void initialize();
     QSharedPointer< QVector<CMatrix> > createLearningMatrix(const QVector<double> &sequence) const;
-    void learnStep(const QVector<CMatrix> &learn, const QVector<double> &etalons, CMatrix &contexMatrix, CMatrix &wM1, CMatrix &wM2, double lCoef) const;
+    void learn(const QVector<CMatrix> &learn, const QVector<double> &etalons, CMatrix &contexMatrix, CMatrix &wM1, CMatrix &wM2, double lCoef) const;
     void normalizeMatrix(CMatrix &matrix) const;
     double error(const QVector<CMatrix> &learn, const QVector<double> &etalons, CMatrix &contexMatrix, CMatrix &wM1, CMatrix &wM2) const;
+    CVector predict(const CVector &sequence, const CMatrix &contexMatrix, const CMatrix &wM1, const CMatrix &wM2, int wSize, int count) const;
 
 private:
     int mWindowSize;

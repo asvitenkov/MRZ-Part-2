@@ -4,5 +4,6 @@
 #include <armadillo>
 
 typedef arma::mat CMatrix;
+typedef arma::vec CVector;
 
 #endif // DEFINES_H

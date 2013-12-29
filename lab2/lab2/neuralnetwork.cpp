@@ -50,28 +50,50 @@ QSharedPointer< QVector<CMatrix> > CNeuralNetwork::createLearningMatrix(const QV
 void CNeuralNetwork::learn(const QVector<double> &sequence)
 {
     QSharedPointer< QVector<CMatrix> > lVector = createLearningMatrix(sequence);
-    QVector<double> eVector = sequence;
-    eVector.resize(mWindowSize + mImageNumber);
+    QVector<double> eVector ;//= sequence;
+    //eVector.resize(mWindowSize + mImageNumber);
+    for(int i=0; i<mImageNumber; i++)
+        eVector << sequence[i+mWindowSize];
+
 
 
     double totalError = std::numeric_limits<double>::max();
 
+    double mOldError = totalError;
+
     while(totalError > mMaxError)
     {
-        learnStep(*lVector.data(), eVector, mContextMatrix, mWeightMatrix1, mWeightMatrix2, mLearningCoefficient);
+        learn(*lVector.data(), eVector, mContextMatrix, mWeightMatrix1, mWeightMatrix2, mLearningCoefficient);
 
         mIterations++;
 
         totalError = error(*lVector.data(), eVector, mContextMatrix, mWeightMatrix1, mWeightMatrix2);
 
+
+
+        if(mIterations % 10000 == 0)
+        {
+            mOldError = totalError;
+
+//            if(qIsNull(mOldError - totalError))
+//                mContextMatrix.fill(0);
+        }
+
+        if(mIterations % 100000 == 0)
+        {
+            qDebug() << totalError;
+            qDebug() << mIterations;
+        }
     }
 
     qDebug() << totalError;
     qDebug() << mIterations;
+
+    qDebug() << predict(sequence,2);
 }
 
 
-void CNeuralNetwork::learnStep(const QVector<CMatrix> &learn, const QVector<double> &etalons, CMatrix &contexMatrix, CMatrix &wM1, CMatrix &wM2, double lCoef) const
+void CNeuralNetwork::learn(const QVector<CMatrix> &learn, const QVector<double> &etalons, CMatrix &contexMatrix, CMatrix &wM1, CMatrix &wM2, double lCoef) const
 {
 
     Q_ASSERT(learn.size() <= etalons.size());
@@ -149,5 +171,68 @@ double CNeuralNetwork::error(const QVector<CMatrix> &learn, const QVector<double
 
 
 
+QVector<double> CNeuralNetwork::predict(const QVector<double> &sequence, int count) const
+{
+    CVector sVector(sequence.size());
 
+    for(int i=0; i<sequence.size(); i++)
+        sVector[i] = sequence[i];
+
+
+    CVector predictVec =  predict(sVector, mContextMatrix, mWeightMatrix1, mWeightMatrix2, mWindowSize, count);
+
+    //std::cout <<predictVec;
+
+    QVector<double> result;
+    for(uint i=0; i<predictVec.n_elem; i++)
+        result << predictVec[i];
+
+    return result;
+}
+
+
+CVector CNeuralNetwork::predict(const CVector &sequence, const CMatrix &contexMatrix, const CMatrix &wM1, const CMatrix &wM2, int wSize, int count) const
+{
+    CVector predict(count);// = CVector(count).t();
+
+//    CVector v1(3);
+//    CVector v2(1);
+//    v1[0] = 1;
+//    v1[1] = 2;
+//    v2[0] = 3;
+
+//    CVector v3 = arma::join_rows(v1.t(),v2);
+
+    for(int i=0; i<count; i++)
+    {
+
+        CVector image;
+
+        if (wSize - i > 0)
+        {
+            CVector v1 = sequence.subvec(sequence.n_elem - wSize + i, sequence.n_elem);
+            v1.set_size(wSize - i);
+            CVector v2 = predict.subvec(0,i);
+            v2.set_size(i);
+            image = arma::join_rows(v1.t(),v2.t());
+            CVector v3 = v1+v2;
+        }
+        else
+        {
+            image = predict.subvec(i - wSize, i).t();
+        }
+
+        CMatrix X = arma::join_rows(image, contexMatrix);
+
+        CMatrix Y1 = wM1 * X;
+        CMatrix Y2 = wM2 * Y1;
+
+        predict[i] = Y2(0,0);
+
+
+
+    }
+
+    return predict;
+}
 

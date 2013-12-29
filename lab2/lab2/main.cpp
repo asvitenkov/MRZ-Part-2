@@ -19,13 +19,13 @@ int main(int argc, char *argv[])
 //    std::cout <<A;
 
 
-    CNeuralNetwork network(2, 6, 0.01, 0.0005, 10000);
+    CNeuralNetwork network(2, 4, 0.01, 0.000001, 10000);
 
     QVector<double> seq;
-    //for(int i=0; i<10; i++)
-    //    seq << i+1;
+    for(int i=0; i<10; i++)
+        seq << i+1;
 
-    seq << 1 << 2 << 3 << 5 << 8 << 13 << 21;
+    //seq << 1 << 2 << 3 << 5 << 8 << 13 << 21 << 34 << 55 << 89;
 
     network.learn(seq);
 
