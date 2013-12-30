@@ -11,6 +11,8 @@ CNeuralNetwork::CNeuralNetwork(int wSize, int imgNumber, double lCoef, double ma
     , mMaxError(maxError)
     , mMaxIterations(maxIter)
     , mIterations(0)
+	, mZeroingLearnContextNeuronsType(None)
+	, mZeroingPredictContextNeuronsType(None)
 {
     initialize();
 }
@@ -89,7 +91,7 @@ void CNeuralNetwork::learn(const QVector<double> &sequence)
     qDebug() << totalError;
     qDebug() << mIterations;
 
-    qDebug() << predict(sequence,2);
+    qDebug() << predict(sequence,4);
 }
 
 
@@ -98,8 +100,22 @@ void CNeuralNetwork::learn(const QVector<CMatrix> &learn, const QVector<double> 
 
     Q_ASSERT(learn.size() <= etalons.size());
 
+
+	switch (mZeroingLearnContextNeuronsType)
+	{
+	case ZeroingFirst:
+		if (mIterations == 0)
+			contexMatrix.fill(0);
+		break;
+
+	case ZeroingAlways:
+		contexMatrix.fill(0);
+		break;
+	}
+
     for(int i=0; i<learn.size(); i++)
     {
+
         CMatrix X = arma::join_rows(learn[i], contexMatrix);
 
         double norm = arma::norm(X,2);
@@ -181,8 +197,6 @@ QVector<double> CNeuralNetwork::predict(const QVector<double> &sequence, int cou
 
     CVector predictVec =  predict(sVector, mContextMatrix, mWeightMatrix1, mWeightMatrix2, mWindowSize, count);
 
-    //std::cout <<predictVec;
-
     QVector<double> result;
     for(uint i=0; i<predictVec.n_elem; i++)
         result << predictVec[i];
@@ -193,43 +207,53 @@ QVector<double> CNeuralNetwork::predict(const QVector<double> &sequence, int cou
 
 CVector CNeuralNetwork::predict(const CVector &sequence, const CMatrix &contexMatrix, const CMatrix &wM1, const CMatrix &wM2, int wSize, int count) const
 {
-    CVector predict(count);// = CVector(count).t();
+    CVector predict(count);
+	predict.fill(0);
 
-//    CVector v1(3);
-//    CVector v2(1);
-//    v1[0] = 1;
-//    v1[1] = 2;
-//    v2[0] = 3;
+	CMatrix cntxtMtr = contexMatrix.t();
 
-//    CVector v3 = arma::join_rows(v1.t(),v2);
 
     for(int i=0; i<count; i++)
     {
 
-        CVector image;
+		switch (mZeroingPredictContextNeuronsType)
+		{
+		case ZeroingFirst:
+			if (i)
+				cntxtMtr = contexMatrix.t();
+			else 
+				cntxtMtr.fill(0);
+			break;
+
+		case ZeroingAlways:
+			cntxtMtr.fill(0);
+			break;
+		}
+
+        CVector image(wSize);
 
         if (wSize - i > 0)
         {
-            CVector v1 = sequence.subvec(sequence.n_elem - wSize + i, sequence.n_elem);
+            CVector v1 = sequence.subvec(sequence.n_elem - wSize + i, sequence.n_elem-1);
             v1.set_size(wSize - i);
-            CVector v2 = predict.subvec(0,i);
-            v2.set_size(i);
-            image = arma::join_rows(v1.t(),v2.t());
-            CVector v3 = v1+v2;
+
+            CVector v2;
+			if(i)
+				v2 = predict.subvec(0,i-1);
+
+            image = arma::join_cols(v1,v2);
         }
         else
         {
-            image = predict.subvec(i - wSize, i).t();
+            image = predict.subvec(i - wSize, i-1);
         }
 
-        CMatrix X = arma::join_rows(image, contexMatrix);
+        CMatrix X = arma::join_cols(image, cntxtMtr);
 
         CMatrix Y1 = wM1 * X;
         CMatrix Y2 = wM2 * Y1;
 
         predict[i] = Y2(0,0);
-
-
 
     }
 

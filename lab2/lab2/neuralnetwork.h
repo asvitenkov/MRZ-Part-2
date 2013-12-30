@@ -10,12 +10,24 @@
 class CNeuralNetwork : public QObject
 {
     Q_OBJECT
+
+public:
+    typedef enum{
+         None
+        ,ZeroingFirst
+        ,ZeroingAlways
+    } ZeroingType;
+
+
 public:
     explicit CNeuralNetwork(int wSize, int imgNumber, double lCoef, double maxError, int maxIter, QObject *parent = 0);
-    
     void learn(const QVector<double> &sequence);
-
     QVector<double> predict(const QVector<double> &sequence, int count) const;
+
+//    void setZeroingLearnContextNeuronsType(ZeroingType type);
+//    void setZeroingPredictContextNeuronsType(ZeroingType type);
+
+//    void zeroingContextNeurons();
 
 signals:
     
@@ -39,6 +51,9 @@ private:
     CMatrix mWeightMatrix1;
     CMatrix mWeightMatrix2;
     CMatrix mContextMatrix;
+
+    ZeroingType mZeroingLearnContextNeuronsType;
+    ZeroingType mZeroingPredictContextNeuronsType;
 
 
 };
