@@ -3,13 +3,13 @@
 
 #include <QDebug>
 
-CNeuralNetwork::CNeuralNetwork(int wSize, int imgNumber, double lCoef, double maxError, int maxIter, QObject *parent)
+CNeuralNetwork::CNeuralNetwork(int wSize, int imgNumber, double lCoef, QObject *parent /* = 0 */)
     : QObject(parent)
     , mWindowSize(wSize)
     , mImageNumber(imgNumber)
     , mLearningCoefficient(lCoef)
-    , mMaxError(maxError)
-    , mMaxIterations(maxIter)
+    //, mMaxError(maxError)
+    //, mMaxIterations(maxIter)
     , mIterations(0)
 	, mZeroingLearnContextNeuronsType(None)
 	, mZeroingPredictContextNeuronsType(None)
@@ -52,46 +52,18 @@ QSharedPointer< QVector<CMatrix> > CNeuralNetwork::createLearningMatrix(const QV
 void CNeuralNetwork::learn(const QVector<double> &sequence)
 {
     QSharedPointer< QVector<CMatrix> > lVector = createLearningMatrix(sequence);
-    QVector<double> eVector ;//= sequence;
-    //eVector.resize(mWindowSize + mImageNumber);
+    QVector<double> eVector ;
     for(int i=0; i<mImageNumber; i++)
         eVector << sequence[i+mWindowSize];
-
-
 
     double totalError = std::numeric_limits<double>::max();
 
     double mOldError = totalError;
 
-    while(totalError > mMaxError)
-    {
-        learn(*lVector.data(), eVector, mContextMatrix, mWeightMatrix1, mWeightMatrix2, mLearningCoefficient);
+    learn(*lVector.data(), eVector, mContextMatrix, mWeightMatrix1, mWeightMatrix2, mLearningCoefficient);
 
-        mIterations++;
+    mIterations++;
 
-        totalError = error(*lVector.data(), eVector, mContextMatrix, mWeightMatrix1, mWeightMatrix2);
-
-
-
-        if(mIterations % 10000 == 0)
-        {
-            mOldError = totalError;
-
-//            if(qIsNull(mOldError - totalError))
-//                mContextMatrix.fill(0);
-        }
-
-        if(mIterations % 100000 == 0)
-        {
-            qDebug() << totalError;
-            qDebug() << mIterations;
-        }
-    }
-
-    qDebug() << totalError;
-    qDebug() << mIterations;
-
-    qDebug() << predict(sequence,4);
 }
 
 
@@ -260,3 +232,19 @@ CVector CNeuralNetwork::predict(const CVector &sequence, const CMatrix &contexMa
     return predict;
 }
 
+
+
+void CNeuralNetwork::zeroingContextNeurons()
+{
+	mContextMatrix.fill(0);
+}
+
+void CNeuralNetwork::setZeroingLearnContextNeuronsType(ZeroingType type)
+{
+	mZeroingLearnContextNeuronsType = type;
+}
+
+void CNeuralNetwork::setZeroingPredictContextNeuronsType(ZeroingType type)
+{
+	mZeroingPredictContextNeuronsType = type;
+}

@@ -20,14 +20,16 @@ public:
 
 
 public:
-    explicit CNeuralNetwork(int wSize, int imgNumber, double lCoef, double maxError, int maxIter, QObject *parent = 0);
+    explicit CNeuralNetwork(int wSize, int imgNumber, double lCoef, /*double maxError, int maxIter,*/ QObject *parent = 0);
     void learn(const QVector<double> &sequence);
     QVector<double> predict(const QVector<double> &sequence, int count) const;
 
-//    void setZeroingLearnContextNeuronsType(ZeroingType type);
-//    void setZeroingPredictContextNeuronsType(ZeroingType type);
+    void setZeroingLearnContextNeuronsType(ZeroingType type);
+    void setZeroingPredictContextNeuronsType(ZeroingType type);
 
-//    void zeroingContextNeurons();
+    void zeroingContextNeurons();
+
+	inline int iteration() const { return mIterations; }
 
 signals:
     
@@ -45,8 +47,8 @@ private:
     int mWindowSize;
     int mImageNumber;
     double mLearningCoefficient;
-    double mMaxError;
-    int mMaxIterations;
+    //double mMaxError;
+    //int mMaxIterations;
     int mIterations;
     CMatrix mWeightMatrix1;
     CMatrix mWeightMatrix2;
