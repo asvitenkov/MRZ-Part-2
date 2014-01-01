@@ -1,11 +1,13 @@
 #include <QApplication>
+#include <QThread>
 #include "mainwindow.h"
 
 #include <cblas.h>
 
 //delete
 #include <armadillo>
-#include "neuralnetwork.h"
+#include "worker.h"
+
 
 int main(int argc, char *argv[])
 {
@@ -19,15 +21,20 @@ int main(int argc, char *argv[])
 //    std::cout <<A;
 
 
-    CNeuralNetwork network(2, 4, 0.01, 0.000001, 10000);
 
-    QVector<double> seq;
-    for(int i=0; i<10; i++)
-        seq << i+1;
+//    QVector<double> seq;
+//    for(int i=0; i<10; i++)
+//        seq << i+1;
 
-    //seq << 1 << 2 << 3 << 5 << 8 << 13 << 21 << 34 << 55 << 89;
+//    //seq << 1 << 2 << 3 << 5 << 8 << 13 << 21 << 34 << 55 << 89;
 
-    network.learn(seq);
+//    CWorker worker(3, 6, 0.001, 0.1, 10000000000000);
+
+//    QThread thread;
+
+//    connect(&thread, SIGNAL(started()), &worker, SLOT(process()));
+//    thread.wait(100);
+//    worker.learn(seq);
 
     MainWindow w;
     w.show();

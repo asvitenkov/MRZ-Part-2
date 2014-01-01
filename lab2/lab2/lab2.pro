@@ -15,11 +15,13 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     defines.cpp \
-    neuralnetwork.cpp
+    neuralnetwork.cpp \
+    worker.cpp
 
 HEADERS  += mainwindow.h \
     defines.h \
-    neuralnetwork.h
+    neuralnetwork.h \
+    worker.h
 
 FORMS    += mainwindow.ui
 

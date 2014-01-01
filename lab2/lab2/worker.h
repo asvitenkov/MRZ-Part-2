@@ -13,10 +13,13 @@ class CWorker : public QObject
 	Q_OBJECT
 
 public:
-	CWorker(int wSize, int imgNumber, double lCoef, double maxError, int maxIter, QObject *parent = 0);
+    CWorker(int wSize, int imgNumber, double lCoef, double maxError, quint64 maxIter, QObject *parent = 0);
 	virtual ~CWorker();
 
 	void learn(const QVector<double> &sequence);
+
+    inline bool isStopped() const { return mIsStopped; }
+    inline bool isExit() const { return mIsExit; }
 
 private:
 	bool mIsStopped;
@@ -25,7 +28,7 @@ private:
 	QWaitCondition mPauseCond;
 	CNeuralNetwork* mNetwork;
 	double mMaxError;
-	int mMaxIterations;
+    quint64 mMaxIterations;
 	QVector<double> mSequence;
 
 public slots:

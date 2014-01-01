@@ -51,14 +51,11 @@ QSharedPointer< QVector<CMatrix> > CNeuralNetwork::createLearningMatrix(const QV
 
 void CNeuralNetwork::learn(const QVector<double> &sequence)
 {
+
+    Q_ASSERT(sequence.size() >= mWindowSize + mImageNumber -1);
+
     QSharedPointer< QVector<CMatrix> > lVector = createLearningMatrix(sequence);
-    QVector<double> eVector ;
-    for(int i=0; i<mImageNumber; i++)
-        eVector << sequence[i+mWindowSize];
-
-    double totalError = std::numeric_limits<double>::max();
-
-    double mOldError = totalError;
+    QVector<double> eVector = createEtalonVector(sequence);
 
     learn(*lVector.data(), eVector, mContextMatrix, mWeightMatrix1, mWeightMatrix2, mLearningCoefficient);
 
@@ -130,7 +127,7 @@ void CNeuralNetwork::normalizeMatrix(CMatrix &matrix) const
 
 
 
-double CNeuralNetwork::error(const QVector<CMatrix> &learn, const QVector<double> &etalons, CMatrix &contexMatrix, CMatrix &wM1, CMatrix &wM2) const
+double CNeuralNetwork::error(const QVector<CMatrix> &learn, const QVector<double> &etalons, const CMatrix &contexMatrix, const CMatrix &wM1, const CMatrix &wM2) const
 {
     Q_ASSERT(learn.size() <= etalons.size());
 
@@ -247,4 +244,26 @@ void CNeuralNetwork::setZeroingLearnContextNeuronsType(ZeroingType type)
 void CNeuralNetwork::setZeroingPredictContextNeuronsType(ZeroingType type)
 {
 	mZeroingPredictContextNeuronsType = type;
+}
+
+
+
+double CNeuralNetwork::error(const QVector<double> &sequence) const
+{
+    QSharedPointer< QVector<CMatrix> > lVector = createLearningMatrix(sequence);
+    QVector<double> eVector = createEtalonVector(sequence);
+
+    return error(*lVector.data(), eVector, mContextMatrix, mWeightMatrix1, mWeightMatrix2);
+}
+
+
+QVector<double> CNeuralNetwork::createEtalonVector(const QVector<double> &sequence) const
+{
+    Q_ASSERT(sequence.size() >= mImageNumber + mWindowSize);
+
+    QVector<double> eVector ;
+    for(int i=0; i < mImageNumber; i++)
+        eVector << sequence[i + mWindowSize];
+
+    return eVector;
 }

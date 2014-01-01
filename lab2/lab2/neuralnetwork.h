@@ -22,6 +22,7 @@ public:
 public:
     explicit CNeuralNetwork(int wSize, int imgNumber, double lCoef, /*double maxError, int maxIter,*/ QObject *parent = 0);
     void learn(const QVector<double> &sequence);
+    double error(const QVector<double> &sequence) const;
     QVector<double> predict(const QVector<double> &sequence, int count) const;
 
     void setZeroingLearnContextNeuronsType(ZeroingType type);
@@ -29,7 +30,7 @@ public:
 
     void zeroingContextNeurons();
 
-	inline int iteration() const { return mIterations; }
+    inline quint64 iteration() const { return mIterations; }
 
 signals:
     
@@ -38,9 +39,10 @@ public slots:
 private:
     void initialize();
     QSharedPointer< QVector<CMatrix> > createLearningMatrix(const QVector<double> &sequence) const;
+    QVector<double> createEtalonVector(const QVector<double> &sequence) const;
     void learn(const QVector<CMatrix> &learn, const QVector<double> &etalons, CMatrix &contexMatrix, CMatrix &wM1, CMatrix &wM2, double lCoef) const;
     void normalizeMatrix(CMatrix &matrix) const;
-    double error(const QVector<CMatrix> &learn, const QVector<double> &etalons, CMatrix &contexMatrix, CMatrix &wM1, CMatrix &wM2) const;
+    double error(const QVector<CMatrix> &learn, const QVector<double> &etalons, const CMatrix &contexMatrix, const CMatrix &wM1, const CMatrix &wM2) const;
     CVector predict(const CVector &sequence, const CMatrix &contexMatrix, const CMatrix &wM1, const CMatrix &wM2, int wSize, int count) const;
 
 private:
@@ -49,7 +51,7 @@ private:
     double mLearningCoefficient;
     //double mMaxError;
     //int mMaxIterations;
-    int mIterations;
+    quint64 mIterations;
     CMatrix mWeightMatrix1;
     CMatrix mWeightMatrix2;
     CMatrix mContextMatrix;

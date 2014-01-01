@@ -1,8 +1,10 @@
 #include "worker.h"
 #include "neuralnetwork.h"
 
+#include <QDebug>
 
-CWorker::CWorker(int wSize, int imgNumber, double lCoef, double maxError, int maxIter, QObject *parent /* = 0 */)
+
+CWorker::CWorker(int wSize, int imgNumber, double lCoef, double maxError, quint64 maxIter, QObject *parent /* = 0 */)
 	: QObject(parent)
 	, mIsStopped(true)
 	, mIsExit(false)
@@ -33,33 +35,42 @@ void CWorker::process()
 		if (mIsExit)
 			break;
 
-		// ξασχενθε
+        // ΠΎΠ±ΡƒΡ‡ΠµΠ½ΠΈΠµ
 
 		mNetwork->learn(mSequence);
 	
-		//totalError = mNetwork->error()
+        totalError = mNetwork->error(mSequence);
 
+        if(mNetwork->iteration() % 50000 == 0)
+            qDebug() << totalError;
 	}
+
+    qDebug() << QString("Learn end:\nerror:%1, iteration:%2").arg(QString::number(totalError)).arg(QString::number(mNetwork->iteration()));
 }
 
 void CWorker::start()
 {
+    if (mSequence.empty())
+        return;
+
 	mIsStopped = false;
+    mPauseCond.wakeAll();
 }
 
 void CWorker::stop()
 {
 	mIsStopped = true;
-	mPauseCond.wakeAll();
 }
 
 void CWorker::exit()
 {
+    mIsExit = true;
 
+    if (mIsStopped)
+        start();
 }
 
 void CWorker::learn(const QVector<double> &sequence)
 {
 	mSequence = sequence;
-	start();
 }

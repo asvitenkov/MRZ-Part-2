@@ -3,6 +3,10 @@
 
 #include <QMainWindow>
 
+
+class CWorker;
+class QThread;
+
 namespace Ui {
 class MainWindow;
 }
@@ -13,10 +17,24 @@ class MainWindow : public QMainWindow
     
 public:
     explicit MainWindow(QWidget *parent = 0);
-    ~MainWindow();
+    virtual ~MainWindow();
     
 private:
+    void initGUI();
+    void resetNetworkThread();
+    void resetGUI();
+    void initNetworkThread();
+
+
     Ui::MainWindow *ui;
+    CWorker *mWorker;
+    QThread *mThread;
+
+private slots:
+    void onBtnInitNetwork();
+    void onBtnStartNetwork();
+    void onBtnStopNetwork();
+    void onBtnResetNetwork();
 };
 
 #endif // MAINWINDOW_H
