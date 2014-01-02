@@ -10,8 +10,10 @@
 
 #include <armadillo>
 
-typedef arma::mat CMatrix;
-typedef arma::vec CVector;
+//typedef arma::mat CMatrix;
+//typedef arma::vec CVector;
+typedef arma::fmat CMatrix;
+typedef arma::fvec CVector;
 
 
 
