@@ -11,7 +11,8 @@ CWorker::CWorker(int wSize, int imgNumber, double lCoef, double maxError, quint6
 	, mIsExit(false)
 	, mMaxError(maxError)
 	, mMaxIterations(maxIter)
-    , mDelay(1)
+    , mDelay(0)
+    , mUpdateStep(10000)
 {
 	mNetwork = new CNeuralNetwork(wSize, imgNumber, lCoef, this);
 }
@@ -43,14 +44,17 @@ void CWorker::process()
 	
         totalError = mNetwork->error(mSequence);
 
-        if(mNetwork->iteration() % 50000 == 0)
-            qDebug() << totalError;
+        if (mNetwork->iteration() % mUpdateStep == 0)
+            emit update(totalError, mNetwork->iteration());
 
         msleep(mDelay);
 
 	}
 
     qDebug() << QString("Learn end:\nerror:%1, iteration:%2").arg(QString::number(totalError)).arg(QString::number(mNetwork->iteration()));
+
+    if (!mIsExit)
+        emit update(totalError, mNetwork->iteration());
 }
 
 void CWorker::start()
@@ -93,4 +97,10 @@ void CWorker::msleep(unsigned long msecs)
     waitCondition.wait(&mutex, msecs);
 
     mutex.unlock();
+}
+
+
+QVector<double> CWorker::predict(const QVector<double> &sequence, int count) const
+{
+    return mNetwork->predict(sequence, count);
 }

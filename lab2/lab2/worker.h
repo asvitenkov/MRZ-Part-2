@@ -18,9 +18,17 @@ public:
 
 	void learn(const QVector<double> &sequence);
 
+    QVector<double> predict(const QVector<double> &sequence, int count) const;
+
     inline bool isStopped() const { return mIsStopped; }
     inline bool isExit() const { return mIsExit; }
     inline void setDelay(uint delay) { mDelay = delay; }
+    inline void setUpdateStep(int step) { mUpdateStep = step; }
+
+signals:
+    void error(double error);
+    void iteration(int iteration);
+    void update(double error, int iteration);
 
 private:
     void msleep(unsigned long msecs);
@@ -34,6 +42,7 @@ private:
     quint64 mMaxIterations;
 	QVector<double> mSequence;
     uint mDelay;
+    int mUpdateStep;
 
 public slots:
 	void process();

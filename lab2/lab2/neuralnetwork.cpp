@@ -25,13 +25,16 @@ void CNeuralNetwork::initialize()
     mWeightMatrix2 = arma::randu<CMatrix>(1, mImageNumber) * 2 - 1;
     mContextMatrix = CMatrix(1, mImageNumber);
     mContextMatrix.fill(0);
+
+    mWeightMatrix1.fill(0.5);
+    mWeightMatrix2.fill(0.5);
 }
 
 
 
 QSharedPointer< QVector<CMatrix> > CNeuralNetwork::createLearningMatrix(const QVector<double> &sequence) const
 {
-    Q_ASSERT(sequence.size() >= mWindowSize + mImageNumber -1 );
+    Q_ASSERT(sequence.size() >= mWindowSize + mImageNumber);
 
     QVector<CMatrix> *result = new QVector<CMatrix>();
 
@@ -163,8 +166,12 @@ QVector<double> CNeuralNetwork::predict(const QVector<double> &sequence, int cou
     for(int i=0; i<sequence.size(); i++)
         sVector[i] = sequence[i];
 
+    CMatrix contextMatrix = mContextMatrix;
+    CMatrix mW1 = mWeightMatrix1;
+    CMatrix mW2 = mWeightMatrix2;
 
-    CVector predictVec =  predict(sVector, mContextMatrix, mWeightMatrix1, mWeightMatrix2, mWindowSize, count);
+
+    CVector predictVec =  predict(sVector, contextMatrix, mW1, mW2, mWindowSize, count);
 
     QVector<double> result;
     for(uint i=0; i<predictVec.n_elem; i++)
@@ -259,7 +266,7 @@ double CNeuralNetwork::error(const QVector<double> &sequence) const
 
 QVector<double> CNeuralNetwork::createEtalonVector(const QVector<double> &sequence) const
 {
-    Q_ASSERT(sequence.size() >= mImageNumber + mWindowSize);
+    Q_ASSERT(sequence.size() >= mImageNumber + mWindowSize - 1);
 
     QVector<double> eVector ;
     for(int i=0; i < mImageNumber; i++)
