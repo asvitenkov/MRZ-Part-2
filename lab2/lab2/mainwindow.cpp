@@ -29,6 +29,10 @@ void MainWindow::onBtnInitNetwork()
     resetNetworkThread();
     resetGUI();
     initNetworkThread();
+
+    ui->btnInitNetwork->hide();
+    ui->btnStartNetwork->show();
+    ui->btnResetNetwork->show();
 }
 
 
@@ -37,7 +41,7 @@ void MainWindow::resetNetworkThread()
     if (mWorker && !mWorker->isExit())
     {
         mWorker->exit();
-        //mWorker->deleteLater();
+        mWorker->deleteLater();
     }
 
     if (mThread)
@@ -45,7 +49,6 @@ void MainWindow::resetNetworkThread()
         mThread->exit(0);
         mThread->wait(1000);
         mThread->deleteLater();
-
     }
 
     mWorker = 0;
@@ -54,14 +57,17 @@ void MainWindow::resetNetworkThread()
 
 void MainWindow::resetGUI()
 {
-
+    ui->btnInitNetwork->show();
+    ui->btnStopNetwork->hide();
+    ui->btnResetNetwork->hide();
+    ui->btnStartNetwork->hide();
 }
 
 void MainWindow::initNetworkThread()
 {
 
     mThread = new QThread(this);
-    mWorker = new CWorker(3,4, 0.00001, 0.01, 100000000);
+    mWorker = new CWorker(3,4, 0.001, 0.001, 100000000);
 
     mWorker->moveToThread(mThread);
 
@@ -71,8 +77,9 @@ void MainWindow::initNetworkThread()
 
 
     QVector<double> vector;
-    for(int i=0; i<15; i++)
-        vector << i+1;
+    vector << 1 << 1;
+    for(int i=0; i<10; i++)
+        vector << vector[i] + vector[i+1];
 
     mWorker->learn(vector);
 }
@@ -81,12 +88,20 @@ void MainWindow::initNetworkThread()
 void MainWindow::onBtnStartNetwork()
 {
     if (mWorker)
+    {
         mWorker->start();
+        ui->btnStartNetwork->hide();
+        ui->btnStopNetwork->show();
+    }
 }
 void MainWindow::onBtnStopNetwork()
 {
     if (mWorker)
+    {
         mWorker->stop();
+        ui->btnStopNetwork->hide();
+        ui->btnStartNetwork->show();
+    }
 }
 
 
@@ -99,8 +114,10 @@ void MainWindow::onBtnResetNetwork()
 
 void MainWindow::initGUI()
 {
-    connect(ui->init, SIGNAL(clicked()),SLOT(onBtnInitNetwork()));
-    connect(ui->start, SIGNAL(clicked()),SLOT(onBtnStartNetwork()));
-    connect(ui->stop, SIGNAL(clicked()),SLOT(onBtnStopNetwork()));
-    connect(ui->reset, SIGNAL(clicked()),SLOT(onBtnResetNetwork()));
+    connect(ui->btnInitNetwork, SIGNAL(clicked()),SLOT(onBtnInitNetwork()));
+    connect(ui->btnStartNetwork, SIGNAL(clicked()),SLOT(onBtnStartNetwork()));
+    connect(ui->btnStopNetwork, SIGNAL(clicked()),SLOT(onBtnStopNetwork()));
+    connect(ui->btnResetNetwork, SIGNAL(clicked()),SLOT(onBtnResetNetwork()));
+
+    resetGUI();
 }

@@ -20,8 +20,11 @@ public:
 
     inline bool isStopped() const { return mIsStopped; }
     inline bool isExit() const { return mIsExit; }
+    inline void setDelay(uint delay) { mDelay = delay; }
 
 private:
+    void msleep(unsigned long msecs);
+
 	bool mIsStopped;
 	bool mIsExit;
 	QMutex mSync;
@@ -30,6 +33,7 @@ private:
 	double mMaxError;
     quint64 mMaxIterations;
 	QVector<double> mSequence;
+    uint mDelay;
 
 public slots:
 	void process();

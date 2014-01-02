@@ -1,6 +1,7 @@
 #include "worker.h"
 #include "neuralnetwork.h"
 
+#include <QThread>
 #include <QDebug>
 
 
@@ -10,6 +11,7 @@ CWorker::CWorker(int wSize, int imgNumber, double lCoef, double maxError, quint6
 	, mIsExit(false)
 	, mMaxError(maxError)
 	, mMaxIterations(maxIter)
+    , mDelay(1)
 {
 	mNetwork = new CNeuralNetwork(wSize, imgNumber, lCoef, this);
 }
@@ -43,6 +45,9 @@ void CWorker::process()
 
         if(mNetwork->iteration() % 50000 == 0)
             qDebug() << totalError;
+
+        msleep(mDelay);
+
 	}
 
     qDebug() << QString("Learn end:\nerror:%1, iteration:%2").arg(QString::number(totalError)).arg(QString::number(mNetwork->iteration()));
@@ -72,5 +77,20 @@ void CWorker::exit()
 
 void CWorker::learn(const QVector<double> &sequence)
 {
-	mSequence = sequence;
+    mSequence = sequence;
+}
+
+
+void CWorker::msleep(unsigned long msecs)
+{
+    if (msecs == 0)
+        return;
+
+    QMutex mutex;
+    mutex.lock();
+
+    QWaitCondition waitCondition;
+    waitCondition.wait(&mutex, msecs);
+
+    mutex.unlock();
 }
