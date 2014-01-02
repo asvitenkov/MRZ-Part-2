@@ -21,13 +21,17 @@ CNeuralNetwork::CNeuralNetwork(int wSize, int imgNumber, double lCoef, QObject *
 
 void CNeuralNetwork::initialize()
 {
-    mWeightMatrix1 = arma::randu<CMatrix>(mImageNumber, mWindowSize + mImageNumber) * 2 - 1;
-    mWeightMatrix2 = arma::randu<CMatrix>(1, mImageNumber) * 2 - 1;
+//    mWeightMatrix1 = arma::randu<CMatrix>(mImageNumber, mWindowSize + mImageNumber) * 2 - 1;
+//    mWeightMatrix2 = arma::randu<CMatrix>(1, mImageNumber) * 2 - 1;
+
+    mWeightMatrix1 = arma::randu<CMatrix>(mImageNumber, mWindowSize + mImageNumber);
+    mWeightMatrix2 = arma::randu<CMatrix>(1, mImageNumber);
+
     mContextMatrix = CMatrix(1, mImageNumber);
     mContextMatrix.fill(0);
 
-    mWeightMatrix1.fill(0.5);
-    mWeightMatrix2.fill(0.5);
+//    mWeightMatrix1.fill(0.5);
+//    mWeightMatrix2.fill(0.5);
 }
 
 
@@ -52,61 +56,64 @@ QSharedPointer< QVector<CMatrix> > CNeuralNetwork::createLearningMatrix(const QV
 }
 
 
-void CNeuralNetwork::learn(const QVector<double> &sequence)
-{
+//void CNeuralNetwork::learn(const QVector<double> &sequence)
+//{
 
-    Q_ASSERT(sequence.size() >= mWindowSize + mImageNumber -1);
+//    Q_ASSERT(sequence.size() >= mWindowSize + mImageNumber -1);
 
-    QSharedPointer< QVector<CMatrix> > lVector = createLearningMatrix(sequence);
-    QVector<double> eVector = createEtalonVector(sequence);
+//    QSharedPointer< QVector<CMatrix> > lVector = createLearningMatrix(sequence);
+//    QVector<double> eVector = createEtalonVector(sequence);
 
-    learn(*lVector.data(), eVector, mContextMatrix, mWeightMatrix1, mWeightMatrix2, mLearningCoefficient);
+//    learn(*lVector.data(), eVector, mContextMatrix, mWeightMatrix1, mWeightMatrix2, mLearningCoefficient);
 
-    mIterations++;
+//    mIterations++;
 
-}
+//}
 
 
 void CNeuralNetwork::learn(const QVector<CMatrix> &learn, const QVector<double> &etalons, CMatrix &contexMatrix, CMatrix &wM1, CMatrix &wM2, double lCoef) const
 {
 
+
+
+#ifndef EXTRA_PERFORMANCE
+
     Q_ASSERT(learn.size() <= etalons.size());
 
+    switch (mZeroingLearnContextNeuronsType)
+    {
+    case ZeroingFirst:
+        if (mIterations == 0)
+            contexMatrix.fill(0);
+        break;
 
-	switch (mZeroingLearnContextNeuronsType)
-	{
-	case ZeroingFirst:
-		if (mIterations == 0)
-			contexMatrix.fill(0);
-		break;
+    case ZeroingAlways:
+        contexMatrix.fill(0);
+        break;
+    }
 
-	case ZeroingAlways:
-		contexMatrix.fill(0);
-		break;
-	}
+#endif
+
+    CMatrix X, Y1, Y2, gamma1, gamma2;
+    double norm;
 
     for(int i=0; i<learn.size(); i++)
     {
 
-        CMatrix X = arma::join_rows(learn[i], contexMatrix);
+        X = arma::join_rows(learn[i], contexMatrix);
 
-        double norm = arma::norm(X,2);
+        norm = arma::norm(X,2);
 
         normalizeMatrix(X);
 
-        CMatrix S1 = X * wM1.t();
-        CMatrix Y1 = S1; // Переделать на Y1 = F(S1)
-        CMatrix S2 = Y1 * wM2.t();
-        CMatrix Y2 = S2; // Переделать на Y1 = F(S1)
+        Y1 = X * wM1.t();
+        Y2 = Y1 * wM2.t();
 
-        CMatrix gamma2 = Y2 * norm - etalons[i];
-        CMatrix gamma1 = gamma2 * wM2;
+        gamma2 = Y2 * norm - etalons[i];
+        gamma1 = gamma2 * wM2;
 
-        CMatrix dW1 = lCoef * gamma1.t() * X;
-        CMatrix dW2 = lCoef * gamma2.t() * Y1;
-
-        wM1 -= dW1;
-        wM2 -= dW2;
+        wM1 -= lCoef * gamma1.t() * X;
+        wM2 -= lCoef * gamma2.t() * Y1;
 
         contexMatrix = Y1;
     }
@@ -116,16 +123,8 @@ void CNeuralNetwork::learn(const QVector<CMatrix> &learn, const QVector<double> 
 
 void CNeuralNetwork::normalizeMatrix(CMatrix &matrix) const
 {
-
-    double sum;
-    for(uint i=0; i<matrix.n_rows; i++)
-    {
-
-        sum = arma::norm(matrix.row(i),2);
-
-        matrix.row(i)/=sum;
-
-    }
+    for(uint i=0; i<matrix.n_rows; ++i)
+        matrix.row(i) /= arma::norm(matrix.row(i),2);
 }
 
 
@@ -136,19 +135,21 @@ double CNeuralNetwork::error(const QVector<CMatrix> &learn, const QVector<double
 
     double error = 0;
 
+    CMatrix Y2,gamma2,X;
+
+    double norm;
+
     for(int i=0; i<learn.size(); i++)
     {
-        CMatrix X = arma::join_rows(learn[i], contexMatrix);
+        X = arma::join_rows(learn[i], contexMatrix);
 
-        double norm = arma::norm(X,2);
+        norm = arma::norm(X,2);
         normalizeMatrix(X);
 
-        CMatrix S1 = X * wM1.t();
-        CMatrix Y1 = S1; // Переделать на Y1 = F(S1)
-        CMatrix S2 = Y1 * wM2.t();
-        CMatrix Y2 = S2; // Переделать на Y1 = F(S1)
+        Y2 = X * wM1.t() * wM2.t();
 
-        CMatrix gamma2 = Y2 * norm - etalons[i];
+
+        gamma2 = Y2 * norm - etalons[i];
 
         error += pow(gamma2(0,0),2);
     }
@@ -255,12 +256,9 @@ void CNeuralNetwork::setZeroingPredictContextNeuronsType(ZeroingType type)
 
 
 
-double CNeuralNetwork::error(const QVector<double> &sequence) const
+double CNeuralNetwork::error() const
 {
-    QSharedPointer< QVector<CMatrix> > lVector = createLearningMatrix(sequence);
-    QVector<double> eVector = createEtalonVector(sequence);
-
-    return error(*lVector.data(), eVector, mContextMatrix, mWeightMatrix1, mWeightMatrix2);
+    return error(*mTrainingSequence.data(), mEtalonSequence, mContextMatrix, mWeightMatrix1, mWeightMatrix2);
 }
 
 
@@ -273,4 +271,22 @@ QVector<double> CNeuralNetwork::createEtalonVector(const QVector<double> &sequen
         eVector << sequence[i + mWindowSize];
 
     return eVector;
+}
+
+void CNeuralNetwork::initSequences(const QVector<double> &sequence)
+{
+    mTrainingSequence = createLearningMatrix(sequence);
+    mEtalonSequence = createEtalonVector(sequence);
+}
+
+
+void CNeuralNetwork::learn()
+{
+
+    Q_ASSERT(sequence.size() >= mWindowSize + mImageNumber);
+
+    learn(*mTrainingSequence.data(), mEtalonSequence, mContextMatrix, mWeightMatrix1, mWeightMatrix2, mLearningCoefficient);
+
+    mIterations++;
+
 }

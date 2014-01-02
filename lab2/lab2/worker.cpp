@@ -40,9 +40,9 @@ void CWorker::process()
 
         // обучение
 
-		mNetwork->learn(mSequence);
+        mNetwork->learn();
 	
-        totalError = mNetwork->error(mSequence);
+        totalError = mNetwork->error();
 
         if (mNetwork->iteration() % mUpdateStep == 0)
             emit update(totalError, mNetwork->iteration());
@@ -82,6 +82,7 @@ void CWorker::exit()
 void CWorker::learn(const QVector<double> &sequence)
 {
     mSequence = sequence;
+    mNetwork->initSequences(sequence);
 }
 
 

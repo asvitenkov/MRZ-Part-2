@@ -34,6 +34,7 @@ QMAKE_LFLAGS += -O3
 QMAKE_CXXFLAGS_DEBUG += -DARMA_NO_DEBUG
 QMAKE_CFLAGS_RELEASE += -DARMA_NO_DEBUG
 
+#QMAKE_CFLAGS_RELEASE += -QT_NO_DEBUG
 
 unix:!macx:!symbian: LIBS += -L$$PWD/../../../../../foss/installed/openblas/lib/ -lopenblas
 

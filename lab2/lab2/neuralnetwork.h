@@ -21,9 +21,12 @@ public:
 
 public:
     explicit CNeuralNetwork(int wSize, int imgNumber, double lCoef, /*double maxError, int maxIter,*/ QObject *parent = 0);
-    void learn(const QVector<double> &sequence);
-    double error(const QVector<double> &sequence) const;
+//    void learn(const QVector<double> &sequence);
+    void learn();
+//    double error(const QVector<double> &sequence) const;
+    double error() const;
     QVector<double> predict(const QVector<double> &sequence, int count) const;
+
 
     void setZeroingLearnContextNeuronsType(ZeroingType type);
     void setZeroingPredictContextNeuronsType(ZeroingType type);
@@ -32,6 +35,8 @@ public:
 
     inline quint64 iteration() const { return mIterations; }
 
+    //delete
+    void initSequences(const QVector<double> &sequence);
 signals:
     
 public slots:
@@ -59,6 +64,8 @@ private:
     ZeroingType mZeroingLearnContextNeuronsType;
     ZeroingType mZeroingPredictContextNeuronsType;
 
+    QSharedPointer< QVector<CMatrix> > mTrainingSequence;
+    QVector<double> mEtalonSequence;
 
 };
 
