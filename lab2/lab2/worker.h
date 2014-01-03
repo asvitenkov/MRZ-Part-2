@@ -1,12 +1,15 @@
 #ifndef WORKER_H
 #define WORKER_H
 
+#include <defines.h>
+
 #include <QObject>
 #include <QMutex>
 #include <QWaitCondition>
 #include <QVector>
 
 class CNeuralNetwork;
+
 
 class CWorker : public QObject
 {
@@ -24,6 +27,10 @@ public:
     inline bool isExit() const { return mIsExit; }
     inline void setDelay(uint delay) { mDelay = delay; }
     inline void setUpdateStep(int step) { mUpdateStep = step; }
+
+    const CMatrix& firstLayerMatrix() const;
+    const CMatrix& secondLayerMatrix() const;
+    const CMatrix& contextMatrix() const;
 
 signals:
     void error(double error);

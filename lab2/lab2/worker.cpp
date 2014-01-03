@@ -105,3 +105,19 @@ QVector<double> CWorker::predict(const QVector<double> &sequence, int count) con
 {
     return mNetwork->predict(sequence, count);
 }
+
+
+const CMatrix& CWorker::firstLayerMatrix() const
+{
+    return mNetwork->firstLayerMatrix();
+}
+
+const CMatrix& CWorker::secondLayerMatrix() const
+{
+    return mNetwork->secondLayerMatrix();
+}
+
+const CMatrix& CWorker::contextMatrix() const
+{
+    return mNetwork->contextMatrix();
+}

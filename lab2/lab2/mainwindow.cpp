@@ -1,9 +1,11 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "worker.h"
+#include "defines.h"
 
 #include <QThread>
 #include <QObject>
+#include <QTextBrowser>
 
 #include <qmath.h>
 
@@ -67,6 +69,16 @@ void MainWindow::onBtnInitNetwork()
 
 void MainWindow::resetNetworkThread()
 {
+
+    for(int i=0; i<mOpenBrowserWindow.size(); i++)
+    {
+        QWidget *w = mOpenBrowserWindow.at(i);
+        w->hide();
+        delete w;
+    }
+
+    mOpenBrowserWindow.clear();
+
     if (mWorker && !mWorker->isExit())
     {
         mWorker->exit();
@@ -182,6 +194,10 @@ void MainWindow::initGUI()
 
     connect(ui->updateStepValue, SIGNAL(valueChanged(int)), SLOT(updateStepValueChanged()));
     connect(ui->delayValue, SIGNAL(valueChanged(int)), SLOT(delayValueChanged()));
+
+    connect(ui->actionContextMatrix, SIGNAL(triggered()), SLOT(showContextMatrix()));
+    connect(ui->actionFirstLayerMatrix, SIGNAL(triggered()), SLOT(showFirstLayerMatrix()));
+    connect(ui->actionSecondLayerMatrix, SIGNAL(triggered()), SLOT(showSecondLayerMatrix()));
 
     resetGUI();
 }
@@ -317,4 +333,80 @@ MainWindow::SequenceType MainWindow::sequenceType() const
         fn = Periodic;
 
     return fn;
+}
+
+QString Matrix2String(const CMatrix &matrix)
+{
+    QString out;
+    QString tmp;
+
+    out+=QString("rows: %1 \ncols: %2\n").arg(QString::number(matrix.n_rows)).arg(QString::number(matrix.n_cols));
+
+    for(uint i=0; i < matrix.n_rows; i++)
+    {
+
+        for(uint j=0; j< matrix.n_cols; j++)
+        {
+            tmp = QString::number(matrix(i,j),'f',4);
+            if(tmp.size() == 6)
+                tmp = " "+tmp;
+            out+=QString("%1     ").arg(tmp);
+        }
+        out+="\n";
+    }
+
+    return out;
+}
+
+
+void MainWindow::showFirstLayerMatrix()
+{
+    if(!mWorker)
+        return;
+
+    onBtnStopNetwork();
+
+    QTextBrowser *br = new QTextBrowser;
+    br->setLineWrapMode(QTextEdit::NoWrap);
+    br->setWindowTitle("First layer matrix");
+
+    br->setText(Matrix2String(mWorker->firstLayerMatrix()));
+
+    br->show();
+
+    mOpenBrowserWindow.push_back(br);
+}
+
+void MainWindow::showSecondLayerMatrix()
+{
+    if(!mWorker)
+        return;
+
+    onBtnStopNetwork();
+
+    QTextBrowser *br = new QTextBrowser;
+    br->setLineWrapMode(QTextEdit::NoWrap);
+    br->setWindowTitle("Second layer matrix");
+
+    br->setText(Matrix2String(mWorker->secondLayerMatrix()));
+
+    br->show();
+    mOpenBrowserWindow.push_back(br);
+}
+
+void MainWindow::showContextMatrix()
+{
+    if(!mWorker)
+        return;
+
+    onBtnStopNetwork();
+
+    QTextBrowser *br = new QTextBrowser;
+    br->setLineWrapMode(QTextEdit::NoWrap);
+    br->setWindowTitle("Context matrix");
+
+    br->setText(Matrix2String(mWorker->contextMatrix()));
+
+    br->show();
+    mOpenBrowserWindow.push_back(br);
 }

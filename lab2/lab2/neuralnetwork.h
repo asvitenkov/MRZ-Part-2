@@ -35,8 +35,12 @@ public:
 
     inline quint64 iteration() const { return mIterations; }
 
-    //delete
     void initSequences(const QVector<double> &sequence);
+
+    const CMatrix& firstLayerMatrix() const { return mWeightMatrix1; }
+    const CMatrix& secondLayerMatrix() const { return mWeightMatrix2; }
+    const CMatrix& contextMatrix() const { return mContextMatrix; }
+
 signals:
     
 public slots:

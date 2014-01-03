@@ -39,6 +39,7 @@ private:
     Ui::MainWindow *ui;
     CWorker *mWorker;
     QThread *mThread;
+    QVector<QWidget*> mOpenBrowserWindow;
 
 private slots:
     void onBtnInitNetwork();
@@ -53,6 +54,10 @@ private slots:
 
     void updateStepValueChanged();
     void delayValueChanged();
+
+    void showFirstLayerMatrix();
+    void showSecondLayerMatrix();
+    void showContextMatrix();
 };
 
 #endif // MAINWINDOW_H

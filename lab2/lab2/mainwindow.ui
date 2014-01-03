@@ -273,6 +273,9 @@
               <property name="decimals">
                <number>10</number>
               </property>
+              <property name="maximum">
+               <double>999999.000000000000000</double>
+              </property>
              </widget>
             </item>
             <item row="1" column="0">
@@ -435,7 +438,40 @@
      <height>25</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuShow">
+    <property name="title">
+     <string>Show</string>
+    </property>
+    <addaction name="actionFirstLayerMatrix"/>
+    <addaction name="actionSecondLayerMatrix"/>
+    <addaction name="actionContextMatrix"/>
+   </widget>
+   <addaction name="menuShow"/>
   </widget>
+  <action name="actionFirstLayerMatrix">
+   <property name="text">
+    <string>First layer matrix</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+1</string>
+   </property>
+  </action>
+  <action name="actionSecondLayerMatrix">
+   <property name="text">
+    <string>Second layer matrix</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+2</string>
+   </property>
+  </action>
+  <action name="actionContextMatrix">
+   <property name="text">
+    <string>Context matrix</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+3</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>

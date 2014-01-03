@@ -21,11 +21,11 @@ CNeuralNetwork::CNeuralNetwork(int wSize, int imgNumber, double lCoef, QObject *
 
 void CNeuralNetwork::initialize()
 {
-//    mWeightMatrix1 = arma::randu<CMatrix>(mImageNumber, mWindowSize + mImageNumber) * 2 - 1;
-//    mWeightMatrix2 = arma::randu<CMatrix>(1, mImageNumber) * 2 - 1;
+    mWeightMatrix1 = arma::randu<CMatrix>(mImageNumber, mWindowSize + mImageNumber) * 2 - 1;
+    mWeightMatrix2 = arma::randu<CMatrix>(1, mImageNumber) * 2 - 1;
 
-    mWeightMatrix1 = arma::randu<CMatrix>(mImageNumber, mWindowSize + mImageNumber);
-    mWeightMatrix2 = arma::randu<CMatrix>(1, mImageNumber);
+//    mWeightMatrix1 = arma::randu<CMatrix>(mImageNumber, mWindowSize + mImageNumber);
+//    mWeightMatrix2 = arma::randu<CMatrix>(1, mImageNumber);
 
     mContextMatrix = CMatrix(1, mImageNumber);
     mContextMatrix.fill(0);
