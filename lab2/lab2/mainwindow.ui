@@ -435,7 +435,7 @@
      <x>0</x>
      <y>0</y>
      <width>552</width>
-     <height>25</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuShow">
@@ -446,7 +446,14 @@
     <addaction name="actionSecondLayerMatrix"/>
     <addaction name="actionContextMatrix"/>
    </widget>
+   <widget class="QMenu" name="menuReset">
+    <property name="title">
+     <string>Reset</string>
+    </property>
+    <addaction name="actionResetContextMatrix"/>
+   </widget>
    <addaction name="menuShow"/>
+   <addaction name="menuReset"/>
   </widget>
   <action name="actionFirstLayerMatrix">
    <property name="text">
@@ -470,6 +477,14 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+3</string>
+   </property>
+  </action>
+  <action name="actionResetContextMatrix">
+   <property name="text">
+    <string>Reset context matrix</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
    </property>
   </action>
  </widget>

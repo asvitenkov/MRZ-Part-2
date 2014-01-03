@@ -41,6 +41,8 @@ public:
     const CMatrix& secondLayerMatrix() const { return mWeightMatrix2; }
     const CMatrix& contextMatrix() const { return mContextMatrix; }
 
+	void resetContextMatrix() { mContextMatrix.fill(0.0); }
+
 signals:
     
 public slots:

@@ -57,7 +57,9 @@ private slots:
 
     void showFirstLayerMatrix();
     void showSecondLayerMatrix();
-    void showContextMatrix();
+	void showContextMatrix();
+
+	void resetContextNeurons();
 };
 
 #endif // MAINWINDOW_H

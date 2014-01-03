@@ -32,6 +32,8 @@ public:
     const CMatrix& secondLayerMatrix() const;
     const CMatrix& contextMatrix() const;
 
+	void resetContextMatrix();
+
 signals:
     void error(double error);
     void iteration(int iteration);

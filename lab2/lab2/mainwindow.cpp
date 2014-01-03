@@ -199,6 +199,8 @@ void MainWindow::initGUI()
     connect(ui->actionFirstLayerMatrix, SIGNAL(triggered()), SLOT(showFirstLayerMatrix()));
     connect(ui->actionSecondLayerMatrix, SIGNAL(triggered()), SLOT(showSecondLayerMatrix()));
 
+	connect(ui->actionResetContextMatrix, SIGNAL(triggered()), SLOT(resetContextNeurons()));
+
     resetGUI();
 }
 
@@ -409,4 +411,15 @@ void MainWindow::showContextMatrix()
 
     br->show();
     mOpenBrowserWindow.push_back(br);
+}
+
+
+void MainWindow::resetContextNeurons()
+{
+	if (!mWorker)
+		return;
+
+	onBtnStopNetwork();
+
+	mWorker->resetContextMatrix();
 }

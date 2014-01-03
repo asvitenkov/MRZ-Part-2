@@ -121,3 +121,9 @@ const CMatrix& CWorker::contextMatrix() const
 {
     return mNetwork->contextMatrix();
 }
+
+
+void CWorker::resetContextMatrix() 
+{ 
+	mNetwork->resetContextMatrix(); 
+}
