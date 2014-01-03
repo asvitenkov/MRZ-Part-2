@@ -252,7 +252,7 @@ QVector<double> MainWindow::createLearnSequence(int p, int m, SequenceType type)
 
     case Power:
         for(int i = 0; i < size; i++)
-            lVector << pow(i+1, 2);
+            lVector << pow((qreal)i+1,(qreal) 2);
         break;
 
     case Periodic:

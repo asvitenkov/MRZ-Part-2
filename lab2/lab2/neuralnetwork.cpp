@@ -283,8 +283,6 @@ void CNeuralNetwork::initSequences(const QVector<double> &sequence)
 void CNeuralNetwork::learn()
 {
 
-    Q_ASSERT(sequence.size() >= mWindowSize + mImageNumber);
-
     learn(*mTrainingSequence.data(), mEtalonSequence, mContextMatrix, mWeightMatrix1, mWeightMatrix2, mLearningCoefficient);
 
     mIterations++;
